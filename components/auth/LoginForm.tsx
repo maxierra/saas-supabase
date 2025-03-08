@@ -36,7 +36,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
       }
 
       if (data) {
-        router.push('/welcome');
+        router.push('/dashboard');
       }
     } catch (error: unknown) {
       setError((error as Error).message || 'Error al iniciar sesión');
