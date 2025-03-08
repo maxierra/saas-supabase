@@ -36,60 +36,64 @@ const DashboardPage = () => {
     growthRate: 15.5,
   };
 
-  const paymentMethodsData = {
+  // Simplified data for charts
+  const pieData = {
     labels: ['Efectivo', 'Tarjeta de Crédito', 'Tarjeta de Débito', 'MercadoPago'],
     datasets: [
       {
+        label: 'Métodos de Pago',
         data: [30, 25, 20, 25],
-        backgroundColor: ['#4F46E5', '#10B981', '#F59E0B', '#6366F1'],
+        backgroundColor: [
+          'rgba(79, 70, 229, 0.7)',
+          'rgba(16, 185, 129, 0.7)',
+          'rgba(245, 158, 11, 0.7)',
+          'rgba(99, 102, 241, 0.7)',
+        ],
+        borderColor: [
+          'rgba(79, 70, 229, 1)',
+          'rgba(16, 185, 129, 1)',
+          'rgba(245, 158, 11, 1)',
+          'rgba(99, 102, 241, 1)',
+        ],
         borderWidth: 1,
       },
     ],
   };
 
-  const monthlySalesData = {
-    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
-    datasets: [
-      {
-        label: 'Ventas Mensuales',
-        data: [65000, 59000, 80000, 81000, 95000, 125000],
-        fill: false,
-        borderColor: '#4F46E5',
-        tension: 0.1,
-        pointBackgroundColor: '#4F46E5',
-        pointBorderColor: '#fff',
-        pointBorderWidth: 2,
-        pointRadius: 4,
-      },
-    ],
-  };
-
-  const dailySalesData = {
+  const barData = {
     labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
     datasets: [
       {
         label: 'Ventas Diarias',
         data: [12000, 19000, 15000, 17000, 22000, 25000, 15000],
-        backgroundColor: '#10B981',
+        backgroundColor: 'rgba(16, 185, 129, 0.7)',
+        borderColor: 'rgba(16, 185, 129, 1)',
+        borderWidth: 1,
       },
     ],
   };
 
-  const chartOptions = {
+  const lineData = {
+    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+    datasets: [
+      {
+        label: 'Ventas Mensuales',
+        data: [65000, 59000, 80000, 81000, 95000, 125000],
+        backgroundColor: 'rgba(79, 70, 229, 0.2)',
+        borderColor: 'rgba(79, 70, 229, 1)',
+        borderWidth: 2,
+        fill: true,
+        tension: 0,
+      },
+    ],
+  };
+
+  // Simplified options
+  const options = {
     responsive: true,
-    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top' as const,
-      },
-    },
-  };
-
-  const lineChartOptions = {
-    ...chartOptions,
-    scales: {
-      y: {
-        beginAtZero: true,
       },
     },
   };
@@ -153,22 +157,22 @@ const DashboardPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Métodos de Pago</h2>
-          <div className="h-80">
-            <Pie data={paymentMethodsData} options={chartOptions} />
+          <div style={{ height: '300px', position: 'relative' }}>
+            <Pie data={pieData} options={options} />
           </div>
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Ventas Mensuales</h2>
-          <div className="h-80">
-            <Line data={monthlySalesData} options={lineChartOptions} />
+          <div style={{ height: '300px', position: 'relative' }}>
+            <Line data={lineData} options={options} />
           </div>
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow col-span-1 lg:col-span-2">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Ventas Diarias</h2>
-          <div className="h-80">
-            <Bar data={dailySalesData} options={chartOptions} />
+          <div style={{ height: '300px', position: 'relative' }}>
+            <Bar data={barData} options={options} />
           </div>
         </div>
       </div>
