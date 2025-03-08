@@ -10,12 +10,12 @@ interface LoginFormProps {
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [showResetForm, setShowResetForm] = useState(false);
-  const [resetLoading, setResetLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [showResetForm, setShowResetForm] = useState<boolean>(false);
+  const [resetLoading, setResetLoading] = useState<boolean>(false);
   const [resetMessage, setResetMessage] = useState<string | null>(null);
   const router = useRouter();
 
@@ -37,8 +37,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
       if (data) {
         router.push('/welcome');
       }
-    } catch (error: any) {
-      setError(error.message || 'Error al iniciar sesión');
+    } catch (error: unknown) {
+      setError((error as Error).message || 'Error al iniciar sesión');
     } finally {
       setLoading(false);
     }
@@ -68,8 +68,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
 
       setResetMessage('Se ha enviado un enlace de recuperación a tu correo electrónico');
       setShowResetForm(false);
-    } catch (error: any) {
-      setError(error.message || 'Error al enviar el enlace de recuperación');
+    } catch (error: unknown) {
+      setError((error as Error).message || 'Error al enviar el enlace de recuperación');
     } finally {
       setResetLoading(false);
     }

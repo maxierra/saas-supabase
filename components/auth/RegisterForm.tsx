@@ -11,11 +11,11 @@ interface RegisterFormProps {
 }
 
 const RegisterForm: React.FC<RegisterFormProps> = ({ message }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,8 +36,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ message }) => {
       if (data) {
         router.push('/login?registered=true');
       }
-    } catch (error: any) {
-      setError(error.message || 'Error durante el registro');
+    } catch (error: unknown) {
+      setError((error as Error).message || 'Error durante el registro');
     } finally {
       setLoading(false);
     }

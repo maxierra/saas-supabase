@@ -45,8 +45,8 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ message: initialM
       setTimeout(() => {
         router.push('/login');
       }, 2000);
-    } catch (error: any) {
-      setError(error.message || 'Error al actualizar la contraseña');
+    } catch (error: unknown) {
+      setError((error as Error).message || 'Error al actualizar la contraseña');
     } finally {
       setLoading(false);
     }

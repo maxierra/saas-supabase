@@ -71,7 +71,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title }) => {
             
             {/* Testimonial */}
             <div className="bg-white/10 p-6 rounded-lg">
-              <p className="italic text-sm">"Tienda360 ha revolucionado la forma en que manejamos nuestro negocio. Incrementamos ventas en un 35% el primer trimestre."</p>
+              <p className="italic text-sm">&quot;Tienda360 ha revolucionado la forma en que manejamos nuestro negocio. Incrementamos ventas en un 35% el primer trimestre.&quot;</p>
               <div className="mt-4 flex items-center space-x-3">
                 <div className="h-10 w-10 rounded-full bg-purple-300"></div>
                 <div>

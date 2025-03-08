@@ -3,23 +3,28 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../../lib/supabase';
+import { Session } from '@supabase/supabase-js';
+
+interface User {
+  id: string;
+  email: string;
+}
 
 export default function Welcome() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     const checkUser = async () => {
-      const { data } = await supabase.auth.getSession();
+      const { data: { session } } = await supabase.auth.getSession();
       
-      if (!data.session) {
-        // Redirect to login if no session exists
+      if (!session) {
         router.push('/login');
         return;
       }
       
-      setUser(data.session.user);
+      setUser(session.user);
       setLoading(false);
     };
 
