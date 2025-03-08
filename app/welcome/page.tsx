@@ -7,7 +7,7 @@ import { supabase } from '../../lib/supabase';
 
 interface User {
   id: string;
-  email: string;
+  email?: string;
 }
 
 export default function Welcome() {
@@ -24,7 +24,12 @@ export default function Welcome() {
         return;
       }
       
-      setUser(session.user);
+      if (session.user) {
+        setUser({
+          id: session.user.id,
+          email: session.user.email || ''
+        });
+      }
       setLoading(false);
     };
 
