@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '../../lib/supabase';
@@ -17,7 +17,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
   const [showResetForm, setShowResetForm] = useState<boolean>(false);
   const [resetLoading, setResetLoading] = useState<boolean>(false);
   const [resetMessage, setResetMessage] = useState<string | null>(null);
+  const [origin, setOrigin] = useState<string>('');
   const router = useRouter();
+
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,12 +61,17 @@ const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
       return;
     }
 
+    if (!origin) {
+      setError('Error: No se pudo determinar la URL de la aplicación');
+      return;
+    }
+
     setResetLoading(true);
     setError(null);
 
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`,
+        redirectTo: `${origin}/reset-password`,
       });
 
       if (error) throw error;
