@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Bar, Pie, Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -31,12 +31,12 @@ ChartJS.register(
 
 const DashboardPage = () => {
   // Mock data for demonstration
-  const [salesData, setSalesData] = useState({
+  const salesData = {
     totalSales: 125000,
     totalTransactions: 450,
     averageTicket: 277.78,
     growthRate: 15.5,
-  });
+  };
 
   const paymentMethodsData = {
     labels: ['Efectivo', 'Tarjeta de Crédito', 'Tarjeta de Débito', 'MercadoPago'],

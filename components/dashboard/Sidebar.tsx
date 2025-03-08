@@ -9,7 +9,6 @@ import {
   CubeIcon, 
   ChartBarIcon, 
   CreditCardIcon,
-  Cog6ToothIcon,
   ArrowLeftOnRectangleIcon
 } from '@heroicons/react/24/outline';
 import { supabase } from '../../lib/supabase';
