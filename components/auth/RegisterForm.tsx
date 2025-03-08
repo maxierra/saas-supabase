@@ -33,8 +33,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ message }) => {
         throw error;
       }
 
-      if (data) {
-        router.push('/login?registered=true');
+      if (data.user) {
+        router.push(`/${data.user.id}/dashboard`);
       }
     } catch (error: unknown) {
       setError((error as Error).message || 'Error durante el registro');

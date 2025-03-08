@@ -35,8 +35,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
         throw error;
       }
 
-      if (data) {
-        router.push('/dashboard');
+      if (data.user) {
+        // Redirigir al usuario a su dashboard basado en su UID
+        router.push(`/${data.user.id}/dashboard`);
       }
     } catch (error: unknown) {
       setError((error as Error).message || 'Error al iniciar sesión');
