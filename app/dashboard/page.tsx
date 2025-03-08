@@ -56,6 +56,10 @@ const DashboardPage = () => {
         fill: false,
         borderColor: '#4F46E5',
         tension: 0.1,
+        pointBackgroundColor: '#4F46E5',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 4,
       },
     ],
   };
@@ -69,6 +73,25 @@ const DashboardPage = () => {
         backgroundColor: '#10B981',
       },
     ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+      },
+    },
+  };
+
+  const lineChartOptions = {
+    ...chartOptions,
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
   };
 
   return (
@@ -131,21 +154,21 @@ const DashboardPage = () => {
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Métodos de Pago</h2>
           <div className="h-80">
-            <Pie data={paymentMethodsData} options={{ maintainAspectRatio: false }} />
+            <Pie data={paymentMethodsData} options={chartOptions} />
           </div>
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Ventas Mensuales</h2>
           <div className="h-80">
-            <Line data={monthlySalesData} options={{ maintainAspectRatio: false }} />
+            <Line data={monthlySalesData} options={lineChartOptions} />
           </div>
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow col-span-1 lg:col-span-2">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Ventas Diarias</h2>
           <div className="h-80">
-            <Bar data={dailySalesData} options={{ maintainAspectRatio: false }} />
+            <Bar data={dailySalesData} options={chartOptions} />
           </div>
         </div>
       </div>
