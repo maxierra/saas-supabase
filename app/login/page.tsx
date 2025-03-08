@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import AuthLayout from '../../components/auth/AuthLayout';
 import LoginForm from '../../components/auth/LoginForm';
 
-export default function Login() {
+function LoginContent() {
   const [message, setMessage] = useState<string | null>(null);
   const searchParams = useSearchParams();
 
@@ -17,9 +17,15 @@ export default function Login() {
     }
   }, [searchParams]);
 
+  return <LoginForm message={message} />;
+}
+
+export default function Login() {
   return (
     <AuthLayout title="Bienvenido de nuevo">
-      <LoginForm message={message} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <LoginContent />
+      </Suspense>
     </AuthLayout>
   );
 }
