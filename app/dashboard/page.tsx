@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { Bar, Pie, Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -14,8 +13,7 @@ import {
   BarElement,
   ArcElement,
 } from 'chart.js';
-import { CurrencyDollarIcon, CreditCardIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
-import { ArrowTrendingUpIcon } from '@heroicons/react/24/outline';
+import { CurrencyDollarIcon, CreditCardIcon, ShoppingCartIcon, ArrowTrendingUpIcon } from '@heroicons/react/24/outline';
 
 ChartJS.register(
   CategoryScale,
