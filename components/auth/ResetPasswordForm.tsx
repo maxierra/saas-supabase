@@ -8,7 +8,11 @@ interface ResetPasswordFormProps {
   message?: string | null;
 }
 
-const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ message: initialMessage }) => {
+interface ResetPasswordFormProps {
+  message?: string | null;
+}
+
+const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ message: initialMessage = null }) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
