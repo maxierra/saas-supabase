@@ -3,6 +3,7 @@
 import React, { ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -10,6 +11,7 @@ interface AuthLayoutProps {
 }
 
 const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title }) => {
+  const pathname = usePathname();
   return (
     <div className="flex min-h-screen items-center justify-center py-2 bg-gradient-to-r from-blue-500 to-blue-700">
       <div className="flex relative w-full max-w-4xl rounded-lg bg-white shadow-md overflow-hidden">
@@ -90,13 +92,13 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title }) => {
           </div>
           
           <div className="flex justify-center space-x-2 mb-6">
-            <Link href="/login" className={`px-4 py-2 text-sm font-medium ${window.location.pathname === '/login' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700 border-b-2 border-transparent hover:border-gray-300'}`}>
+            <Link href="/login" className={`px-4 py-2 text-sm font-medium ${pathname === '/login' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700 border-b-2 border-transparent hover:border-gray-300'}`}>
               Iniciar Sesión
             </Link>
-            <Link href="/register" className={`px-4 py-2 text-sm font-medium ${window.location.pathname === '/register' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700 border-b-2 border-transparent hover:border-gray-300'}`}>
+            <Link href="/register" className={`px-4 py-2 text-sm font-medium ${pathname === '/register' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700 border-b-2 border-transparent hover:border-gray-300'}`}>
               Registrarse
             </Link>
-            <Link href="/reset-password" className={`px-4 py-2 text-sm font-medium ${window.location.pathname === '/reset-password' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700 border-b-2 border-transparent hover:border-gray-300'}`}>
+            <Link href="/reset-password" className={`px-4 py-2 text-sm font-medium ${pathname === '/reset-password' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700 border-b-2 border-transparent hover:border-gray-300'}`}>
               Recuperar
             </Link>
           </div>

@@ -17,12 +17,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ message }) => {
   const [showResetForm, setShowResetForm] = useState<boolean>(false);
   const [resetLoading, setResetLoading] = useState<boolean>(false);
   const [resetMessage, setResetMessage] = useState<string | null>(null);
-  const [origin, setOrigin] = useState<string>('');
   const router = useRouter();
-
-  useEffect(() => {
-    setOrigin(window.location.origin);
-  }, []);
+  const origin = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
