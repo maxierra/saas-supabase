@@ -2,14 +2,15 @@
 
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
-// Usar iconos disponibles en la versión 24
-import { BanknotesIcon, CreditCardIcon, ReceiptPercentIcon } from '@heroicons/react/24/outline';
+// Usar solo los iconos que realmente utilizamos
+import { BanknotesIcon, ReceiptPercentIcon } from '@heroicons/react/24/outline';
 
 export default function CajaPage() {
   const params = useParams();
   const uid = params.uid as string;
   
-  const [transacciones, setTransacciones] = useState([
+  // Usar useState sin el setter ya que no lo utilizamos en este ejemplo
+  const [transacciones] = useState([
     { id: 1, fecha: '2025-03-08 14:25', tipo: 'Ingreso', metodo: 'Efectivo', monto: 1250.50, concepto: 'Venta #1045' },
     { id: 2, fecha: '2025-03-08 12:10', tipo: 'Ingreso', metodo: 'Tarjeta', monto: 850.75, concepto: 'Venta #1044' },
     { id: 3, fecha: '2025-03-08 11:30', tipo: 'Egreso', metodo: 'Efectivo', monto: 300.00, concepto: 'Pago proveedor' },

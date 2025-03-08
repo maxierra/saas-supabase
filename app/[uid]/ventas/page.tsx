@@ -7,7 +7,7 @@ export default function VentasPage() {
   const params = useParams();
   const uid = params.uid as string;
   
-  const [ventas, setVentas] = useState([
+  const [ventas] = useState([
     { id: 1, fecha: '2025-03-08', cliente: 'Juan Pérez', total: 1250.50, estado: 'Completada' },
     { id: 2, fecha: '2025-03-07', cliente: 'María López', total: 850.75, estado: 'Completada' },
     { id: 3, fecha: '2025-03-07', cliente: 'Carlos Rodríguez', total: 2100.00, estado: 'Pendiente' },

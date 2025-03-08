@@ -7,7 +7,7 @@ export default function ProductosPage() {
   const params = useParams();
   const uid = params.uid as string;
   
-  const [productos, setProductos] = useState([
+  const [productos] = useState([
     { id: 1, nombre: 'Laptop HP Pavilion', categoria: 'Electrónica', precio: 899.99, stock: 15 },
     { id: 2, nombre: 'Smartphone Samsung Galaxy', categoria: 'Electrónica', precio: 699.99, stock: 23 },
     { id: 3, nombre: 'Auriculares Bluetooth', categoria: 'Accesorios', precio: 49.99, stock: 42 },
