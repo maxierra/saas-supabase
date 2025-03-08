@@ -1,10 +1,11 @@
 'use client';
 
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { DocumentTextIcon } from '@heroicons/react/24/outline';
+import { DocumentTextIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
+import InfoModal from '../modals/InfoModal';
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -13,6 +14,24 @@ interface AuthLayoutProps {
 
 const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title }) => {
   const pathname = usePathname();
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+  const [hasSeenInfo, setHasSeenInfo] = useState(false);
+  
+  // Verificar si el usuario ya ha visto el modal de información
+  useEffect(() => {
+    const infoSeen = localStorage.getItem('tienda360_info_seen');
+    if (infoSeen) {
+      setHasSeenInfo(true);
+    }
+  }, []);
+  
+  // Marcar que el usuario ha visto el modal
+  const handleOpenModal = () => {
+    setIsInfoModalOpen(true);
+    localStorage.setItem('tienda360_info_seen', 'true');
+    setHasSeenInfo(true);
+  };
+  
   return (
     <div className="flex min-h-screen items-center justify-center py-2 bg-gradient-to-r from-blue-500 to-blue-700">
       <div className="flex relative w-full max-w-4xl rounded-lg bg-white shadow-md overflow-hidden">
@@ -21,7 +40,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title }) => {
           <div className="space-y-8">
             <div className="flex items-center space-x-3">
               <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
               <h2 className="text-2xl font-bold">Tienda360</h2>
             </div>
@@ -90,6 +109,19 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title }) => {
         <div className="w-full md:w-1/2 p-10 space-y-8">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
+            <button
+              onClick={handleOpenModal}
+              className="flex items-center px-3 py-2 rounded-full text-white bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 shadow-lg hover:shadow-xl transition-all duration-300 animate-pulse"
+            >
+              <InformationCircleIcon className="h-5 w-5 mr-1" />
+              <span className="text-sm font-medium">Sobre Tienda360</span>
+              {!hasSeenInfo && (
+                <span className="relative flex h-2 w-2 ml-1">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-yellow-500"></span>
+                </span>
+              )}
+            </button>
           </div>
           
           <div className="flex justify-center space-x-2 mb-6">
@@ -134,6 +166,12 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title }) => {
           />
         </div>
       </div>
+      
+      {/* Modal Informativo */}
+      <InfoModal 
+        isOpen={isInfoModalOpen} 
+        onClose={() => setIsInfoModalOpen(false)} 
+      />
     </div>
   );
 };
