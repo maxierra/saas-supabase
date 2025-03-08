@@ -79,11 +79,11 @@ const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
                     <h4 className="text-xl font-semibold text-white mb-4">Lo que dicen nuestros clientes 💬</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div className="bg-white/20 p-4 rounded-lg backdrop-blur-sm">
-                        <p className="italic text-white">"Tienda 360 ha transformado la manera en que gestionamos nuestras finanzas. El software es tan fácil de usar, ¡y ahora tenemos el control total de nuestras ventas y gastos!"</p>
+                        <p className="italic text-white">&ldquo;Tienda 360 ha transformado la manera en que gestionamos nuestras finanzas. El software es tan fácil de usar, ¡y ahora tenemos el control total de nuestras ventas y gastos!&rdquo;</p>
                         <p className="font-medium mt-2 text-amber-100">– Carlos, Tienda de Ropa</p>
                       </div>
                       <div className="bg-white/20 p-4 rounded-lg backdrop-blur-sm">
-                        <p className="italic text-white">"Como pequeño comerciante, no podía permitirme herramientas caras. Con Tienda 360, tengo todo lo que necesito a un precio que puedo pagar."</p>
+                        <p className="italic text-white">&ldquo;Como pequeño comerciante, no podía permitirme herramientas caras. Con Tienda 360, tengo todo lo que necesito a un precio que puedo pagar.&rdquo;</p>
                         <p className="font-medium mt-2 text-amber-100">– Ana, Tienda de Electrodomésticos</p>
                       </div>
                     </div>
