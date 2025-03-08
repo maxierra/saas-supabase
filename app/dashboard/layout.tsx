@@ -11,6 +11,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [isLoading, setIsLoading] = useState(true);
+  const [userUid, setUserUid] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -20,6 +21,7 @@ export default function DashboardLayout({
       if (!session) {
         router.push('/login');
       } else {
+        setUserUid(session.user.id);
         setIsLoading(false);
       }
     };
@@ -37,7 +39,7 @@ export default function DashboardLayout({
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      <Sidebar />
+      <Sidebar userUid={userUid} />
       <main className="flex-1 p-6 overflow-auto">
         {children}
       </main>
