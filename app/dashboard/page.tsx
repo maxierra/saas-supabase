@@ -91,61 +91,77 @@ const DashboardPage = () => {
   // Simplified options
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top' as const,
+        labels: {
+          // This more specific font property overrides the global property
+          font: {
+            size: 12
+          },
+          boxWidth: 15
+        }
       },
+      tooltip: {
+        bodyFont: {
+          size: 13
+        },
+        titleFont: {
+          size: 14
+        }
+      }
     },
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Dashboard de Ventas</h1>
+    <div className="p-3 sm:p-6 max-w-7xl mx-auto">
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-8">Dashboard de Ventas</h1>
       
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-lg shadow">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-4 sm:mb-8">
+        <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
           <div className="flex items-center">
-            <CurrencyDollarIcon className="h-8 w-8 text-indigo-600" />
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Ventas Totales</p>
-              <p className="text-2xl font-semibold text-gray-900">
+            <CurrencyDollarIcon className="h-6 w-6 sm:h-8 sm:w-8 text-indigo-600" />
+            <div className="ml-3 sm:ml-4">
+              <p className="text-xs sm:text-sm font-medium text-gray-500">Ventas Totales</p>
+              <p className="text-lg sm:text-2xl font-semibold text-gray-900">
                 ${salesData.totalSales.toLocaleString()}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
           <div className="flex items-center">
-            <ShoppingCartIcon className="h-8 w-8 text-emerald-600" />
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Transacciones</p>
-              <p className="text-2xl font-semibold text-gray-900">
+            <ShoppingCartIcon className="h-6 w-6 sm:h-8 sm:w-8 text-emerald-600" />
+            <div className="ml-3 sm:ml-4">
+              <p className="text-xs sm:text-sm font-medium text-gray-500">Transacciones</p>
+              <p className="text-lg sm:text-2xl font-semibold text-gray-900">
                 {salesData.totalTransactions}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
           <div className="flex items-center">
-            <CreditCardIcon className="h-8 w-8 text-amber-600" />
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Ticket Promedio</p>
-              <p className="text-2xl font-semibold text-gray-900">
+            <CreditCardIcon className="h-6 w-6 sm:h-8 sm:w-8 text-amber-600" />
+            <div className="ml-3 sm:ml-4">
+              <p className="text-xs sm:text-sm font-medium text-gray-500">Ticket Promedio</p>
+              <p className="text-lg sm:text-2xl font-semibold text-gray-900">
                 ${salesData.averageTicket.toFixed(2)}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
           <div className="flex items-center">
-            <ArrowTrendingUpIcon className="h-8 w-8 text-indigo-600" />
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Crecimiento</p>
-              <p className="text-2xl font-semibold text-gray-900">
+            <ArrowTrendingUpIcon className="h-6 w-6 sm:h-8 sm:w-8 text-indigo-600" />
+            <div className="ml-3 sm:ml-4">
+              <p className="text-xs sm:text-sm font-medium text-gray-500">Crecimiento</p>
+              <p className="text-lg sm:text-2xl font-semibold text-gray-900">
                 {salesData.growthRate}%
               </p>
             </div>
@@ -154,24 +170,24 @@ const DashboardPage = () => {
       </div>
 
       {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Métodos de Pago</h2>
-          <div style={{ height: '300px', position: 'relative' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-6">
+        <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">Métodos de Pago</h2>
+          <div style={{ height: '250px', position: 'relative' }}>
             <Pie data={pieData} options={options} />
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Ventas Mensuales</h2>
-          <div style={{ height: '300px', position: 'relative' }}>
+        <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">Ventas Mensuales</h2>
+          <div style={{ height: '250px', position: 'relative' }}>
             <Line data={lineData} options={options} />
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow col-span-1 lg:col-span-2">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Ventas Diarias</h2>
-          <div style={{ height: '300px', position: 'relative' }}>
+        <div className="bg-white p-4 sm:p-6 rounded-lg shadow col-span-1 lg:col-span-2">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">Ventas Diarias</h2>
+          <div style={{ height: '250px', position: 'relative' }}>
             <Bar data={barData} options={options} />
           </div>
         </div>
