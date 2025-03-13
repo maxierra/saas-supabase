@@ -1,0 +1,199 @@
+import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { checkSubscriptionStatus } from './utils/subscription';
+
+console.log('🔧 Middleware cargado correctamente');
+
+// Credenciales para el cliente anónimo (autenticación)
+const supabaseUrl = 'https://crtgzjzzqrxyizraqpyk.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNydGd6anp6cXJ4eWl6cmFxcHlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEzNDYwMDIsImV4cCI6MjA1NjkyMjAwMn0.zQu06oF4VbJ0P7I_jtAEdnjC_RUdosnpRsjvUvgBEJ0';
+
+// Cliente con rol de servicio para operaciones privilegiadas
+const supabaseAdmin = createClient(
+  supabaseUrl,
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNydGd6anp6cXJ4eWl6cmFxcHlrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0MTM0NjAwMiwiZXhwIjoyMDU2OTIyMDAyfQ.22ZOF3U4NQ6cdbDTNFi367OG7oi7ocumixatwLICF10'
+);
+
+// Nombre base de la cookie de autenticación
+const AUTH_COOKIE_NAME = 'sb-crtgzjzzqrxyizraqpyk-auth-token';
+
+export async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+
+  // Si es una ruta pública o estática, permitir acceso inmediatamente
+  if (isPublicRoute(pathname)) {
+    return NextResponse.next();
+  }
+
+  // Crear una respuesta base
+  let response = NextResponse.next();
+
+  try {
+    // Verificar si existe la cookie de autenticación
+    const authCookie = request.cookies.get(AUTH_COOKIE_NAME);
+    if (!authCookie) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+
+    // Crear el cliente de Supabase
+    const supabase = createServerClient(
+      supabaseUrl,
+      supabaseAnonKey,
+      {
+        cookies: {
+          get(name: string) {
+            return request.cookies.get(name)?.value;
+          },
+          set(name: string, value: string, options: any) {
+            response.cookies.set(name, value, {
+              ...options,
+              httpOnly: true,
+              secure: process.env.NODE_ENV === 'production',
+              sameSite: 'lax',
+              path: '/',
+              maxAge: 7 * 24 * 60 * 60 // 7 días
+            });
+          },
+          remove(name: string, options: any) {
+            response.cookies.set(name, '', { ...options, maxAge: 0, path: '/' });
+          },
+        },
+      }
+    );
+
+    // Verificar si hay una sesión
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    
+    // Log detallado del estado de la sesión
+    console.log('👤 Middleware - Estado de sesión:', {
+      activa: session ? 'Sí' : 'No',
+      error: sessionError ? sessionError.message : 'No',
+      userId: session?.user?.id || 'N/A',
+      cookiePresente: authCookie ? 'Sí' : 'No'
+    });
+
+    // Si no hay sesión, redirigir a login
+    if (!session) {
+      console.log('❌ Middleware - Sin sesión, redirigiendo a login');
+      const loginUrl = new URL('/login', request.url);
+      return NextResponse.redirect(loginUrl);
+    }
+
+    // Si es una ruta protegida, verificar suscripción
+    if (isProtectedRoute(pathname)) {
+      try {
+        const userId = session.user.id;
+        console.log('🔒 Middleware - Verificando suscripción para UID:', userId);
+        
+        // Obtener la suscripción directamente
+        console.log('📑 Middleware - Buscando suscripción para:', userId);
+        const response = await supabaseAdmin
+          .from('suscripciones')
+          .select('*')
+          .eq('uid', userId);
+
+        console.log('📑 Middleware - DEBUG - Respuesta completa:', response);
+        
+        const { data: subscriptions, error: subError } = response;
+        const subscription = subscriptions?.[0];
+        console.log('📑 Middleware - DEBUG - Suscripción encontrada:', subscription);
+
+        if (subError) {
+          console.error('❌ Middleware - Error al verificar suscripción:', subError);
+          return NextResponse.redirect(new URL('/subscription?error=true', request.url));
+        }
+
+        if (!subscription || subscription.estado === 'inactive') {
+          console.log('⚠️ Middleware - Suscripción no válida, redirigiendo a /subscription');
+          return NextResponse.redirect(new URL('/subscription?expired=true', request.url));
+        }
+
+        console.log('✅ Middleware - Suscripción activa encontrada, permitiendo acceso');
+        return response;
+      } catch (error) {
+        console.error('❌ Middleware - Error al verificar suscripción:', error);
+        return NextResponse.redirect(new URL('/subscription?error=true', request.url));
+      }
+    }
+
+    // Si no es una ruta protegida y hay sesión, permitir acceso
+    console.log('✅ Middleware - Permitiendo acceso a ruta no protegida');
+    return response;
+  } catch (error) {
+    console.error('❌ Error en el middleware:', error);
+    // En caso de error, permitir el acceso solo a rutas públicas
+    if (!isPublicRoute(pathname)) {
+      console.log('❌ Redirigiendo a login por error');
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+    console.log('✅ Permitiendo acceso a ruta pública a pesar del error');
+    return response;
+  }
+}
+
+// Rutas que no requieren autenticación
+function isPublicRoute(pathname: string) {
+  // Rutas públicas estáticas
+  const publicRoutes = [
+    '/login',
+    '/register',
+    '/reset-password',
+    '/subscription'
+  ];
+
+  // Recursos estáticos y API
+  const staticPaths = [
+    '/_next/',
+    '/favicon.ico',
+    '/api/',
+    '.css',
+    '.js',
+    '.png',
+    '.jpg',
+    '.svg'
+  ];
+
+  // Verificar si es una ruta pública
+  if (publicRoutes.some(route => pathname.startsWith(route))) {
+    return true;
+  }
+
+  // Verificar si es un recurso estático
+  if (staticPaths.some(path => pathname.includes(path))) {
+    return true;
+  }
+
+  return false;
+}
+
+// Rutas que requieren verificación de suscripción
+function isProtectedRoute(pathname: string) {
+  // Normalizar el pathname
+  const normalizedPath = pathname.toLowerCase();
+
+  // Si es una ruta pública, no está protegida
+  if (isPublicRoute(normalizedPath)) {
+    return false;
+  }
+
+  // Rutas protegidas estándar
+  const protectedPaths = ['dashboard', 'productos', 'ventas', 'reportes', 'caja'];
+  
+  // Verificar rutas dinámicas con UID
+  const uidPattern = /^\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(\/|$)/;
+  const isUidRoute = uidPattern.test(normalizedPath);
+
+  // Una ruta está protegida si:
+  // 1. Es una ruta con UID válido, o
+  // 2. Contiene uno de los paths protegidos
+  return isUidRoute || protectedPaths.some(path => normalizedPath.includes(`/${path}`));
+}
+
+export const config = {
+  matcher: [
+    // Incluir todas las rutas excepto recursos estáticos
+    '/((?!_next/static|_next/image|favicon.ico).*)',
+  ]
+};

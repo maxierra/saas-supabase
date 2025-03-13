@@ -1,0 +1,132 @@
+import { createServerClient } from '@supabase/ssr';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { checkSubscriptionStatus } from './utils/subscription';
+
+// Usar las mismas credenciales que en lib/supabase.ts
+const supabaseUrl = 'https://crtgzjzzqrxyizraqpyk.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNydGd6anp6cXJ4eWl6cmFxcHlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEzNDYwMDIsImV4cCI6MjA1NjkyMjAwMn0.zQu06oF4VbJ0P7I_jtAEdnjC_RUdosnpRsjvUvgBEJ0';
+
+export async function middleware(request: NextRequest) {
+  const res = NextResponse.next();
+
+  try {
+    // Crear el cliente de Supabase
+    const supabase = createServerClient(
+      supabaseUrl,
+      supabaseAnonKey,
+      {
+        cookies: {
+          get(name: string) {
+            return request.cookies.get(name)?.value;
+          },
+          set(name: string, value: string, options: any) {
+            res.cookies.set({
+              name,
+              value,
+              ...options,
+            });
+          },
+          remove(name: string, options: any) {
+            res.cookies.set({
+              name,
+              value: '',
+              ...options,
+            });
+          },
+        },
+      }
+    );
+
+    // Verificar si hay una sesión
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    // Si no hay sesión y la ruta no es pública, redirigir a login
+    if (!session && !isPublicRoute(request.nextUrl.pathname)) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+
+    // Si hay sesión y es una ruta protegida, verificar suscripción
+    if (session && isProtectedRoute(request.nextUrl.pathname)) {
+      try {
+        const subscriptionStatus = await checkSubscriptionStatus(session.user.id);
+        console.log('Estado de suscripción:', subscriptionStatus);
+        
+        if (!subscriptionStatus.active) {
+          // Si la suscripción no está activa, redirigir a la página de suscripción
+          return NextResponse.redirect(
+            new URL('/subscription?expired=true', request.url)
+          );
+        }
+      } catch (error) {
+        console.error('Error al verificar suscripción:', error);
+        // En caso de error, redirigir a la página de suscripción por seguridad
+        return NextResponse.redirect(
+          new URL('/subscription?error=true', request.url)
+        );
+      }
+    }
+
+    return res;
+  } catch (error) {
+    console.error('Error en el middleware:', error);
+    // En caso de error, permitir el acceso pero solo a rutas públicas
+    if (!isPublicRoute(request.nextUrl.pathname)) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+    return res;
+  }
+}
+
+// Rutas que no requieren autenticación
+function isPublicRoute(pathname: string) {
+  const publicRoutes = [
+    '/login',
+    '/register',
+    '/reset-password',
+    '/subscription'
+  ];
+  return publicRoutes.includes(pathname);
+}
+
+// Rutas que requieren verificación de suscripción
+function isProtectedRoute(pathname: string) {
+  // Verificar rutas que empiezan con /[uid]/
+  if (pathname.match(/^\/[^/]+\/(?:dashboard|productos|ventas|reportes|caja)/)) {
+    return true;
+  }
+  
+  // Otras rutas protegidas
+  const protectedRoutes = [
+    '/dashboard',
+    '/productos',
+    '/ventas',
+    '/reportes',
+    '/caja'
+  ];
+  return protectedRoutes.includes(pathname);
+}
+
+export const config = {
+  matcher: [
+    // Rutas que requieren autenticación
+    '/dashboard/:path*',
+    '/productos/:path*',
+    '/ventas/:path*',
+    '/reportes/:path*',
+    '/caja/:path*',
+    // Rutas dinámicas con [uid]
+    '/:uid/dashboard/:path*',
+    '/:uid/productos/:path*',
+    '/:uid/ventas/:path*',
+    '/:uid/reportes/:path*',
+    '/:uid/caja/:path*',
+    // Rutas públicas (para manejo de redirecciones)
+    '/login',
+    '/register',
+    '/reset-password',
+    '/subscription'
+  ]
+};

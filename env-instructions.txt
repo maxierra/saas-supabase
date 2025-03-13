@@ -1,0 +1,17 @@
+Para que el middleware funcione correctamente, necesitas:
+
+1. Crear o editar el archivo .env.local y agregar estas variables:
+
+NEXT_PUBLIC_SUPABASE_URL=https://crtgzjzzqrxyizraqpyk.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNydGd6anp6cXJ4eWl6cmFxcHlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEzNDYwMDIsImV4cCI6M
+
+2. Reiniciar el servidor de desarrollo después de agregar las variables.
+
+3. Para probar que funciona:
+   - Inicia sesión normalmente
+   - Cambia el estado de tu suscripción a "inactive" en la tabla subscriptions de Supabase
+   - Intenta acceder a /dashboard o /{tu-uid}/dashboard
+   - Deberías ser redirigido automáticamente a /subscription
+
+4. Para restaurar el acceso:
+   - Cambia el estado de vuelta a "trial" o "active" en la tabla subscriptions
