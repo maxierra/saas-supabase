@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Usuario - Sistema de Gestión (Parte 2)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+            margin-top: 1.5em;
+        }
+        h1 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 5px;
+        }
+        .feature-card {
+            background-color: #f9f9f9;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 5px 5px 0;
+        }
+        .tip {
+            background-color: #e8f4f8;
+            border-left: 4px solid #2ecc71;
+            padding: 10px 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        .warning {
+            background-color: #fff5e6;
+            border-left: 4px solid #e67e22;
+            padding: 10px 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        .step {
+            background-color: #f0f7ff;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            counter-increment: step-counter;
+        }
+        .step::before {
+            content: "Paso " counter(step-counter) ": ";
+            font-weight: bold;
+            color: #3498db;
+        }
+        code {
+            background-color: #f0f0f0;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .screenshot {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border: 1px dashed #ccc;
+            text-align: center;
+            margin: 15px 0;
+        }
+        .screenshot p {
+            font-style: italic;
+            margin-top: 5px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Manual de Usuario - Sistema de Gestión (Parte 2)</h1>
+
+    <section id="ventas">
+        <h2>4. Registro de Ventas</h2>
+        <div class="feature-card">
+            <p>La sección de Ventas le permite registrar transacciones de manera rápida y eficiente:</p>
+            
+            <h3>4.1 Realizar Nueva Venta</h3>
+            
+            <div class="step">
+                Acceda a la sección "Ventas" desde el menú lateral.
+            </div>
+            
+            <div class="step">
+                Para agregar productos a la venta, puede:
+                <ul>
+                    <li><strong>Escanear código de barras:</strong> Si cuenta con un lector, escanee directamente el código del producto.</li>
+                    <li><strong>Ingresar código manualmente:</strong> Escriba el código del producto en el campo "Código" y presione Enter.</li>
+                    <li><strong>Buscar producto:</strong> Haga clic en "Buscar producto" para abrir el buscador y seleccionar el producto deseado.</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Una vez agregado el producto, puede modificar la cantidad:
+                <ul>
+                    <li>Utilice los botones "+" y "-" junto a la cantidad.</li>
+                    <li>O haga clic directamente en el número y escriba la cantidad deseada.</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Para eliminar un producto de la venta, haga clic en el botón "X" en la fila correspondiente.
+            </div>
+            
+            <div class="step">
+                Observe que el sistema calcula automáticamente el subtotal por producto y el total de la venta.
+            </div>
+            
+            <div class="step">
+                Seleccione el método de pago:
+                <ul>
+                    <li><strong>Efectivo:</strong> Ingrese el monto recibido y el sistema calculará el cambio.</li>
+                    <li><strong>Tarjeta:</strong> Seleccione esta opción para pagos con tarjeta de crédito o débito.</li>
+                    <li><strong>Transferencia:</strong> Para pagos realizados por transferencia bancaria.</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Haga clic en "Finalizar Venta" para completar la transacción.
+            </div>
+            
+            <div class="step">
+                El sistema generará automáticamente un ticket de venta que puede imprimir o guardar como PDF.
+            </div>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> Utilice la tecla Tab para navegar rápidamente entre los campos del formulario de venta.
+            </div>
+            
+            <div class="screenshot">
+                <p>[Imagen: Pantalla de registro de venta con productos agregados]</p>
+            </div>
+        </div>
+        
+        <h3>4.2 Vender Productos por Peso</h3>
+        <div class="feature-card">
+            <p>Para vender productos que se comercializan por peso:</p>
+            
+            <div class="step">
+                Busque el producto por peso utilizando su código o el buscador.
+            </div>
+            
+            <div class="step">
+                Al seleccionar un producto por peso, se abrirá automáticamente una ventana para ingresar los gramos.
+            </div>
+            
+            <div class="step">
+                Ingrese la cantidad en gramos y haga clic en "Confirmar".
+            </div>
+            
+            <div class="step">
+                El sistema calculará automáticamente el subtotal basado en el precio por gramo y la cantidad ingresada.
+            </div>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> Si dispone de una báscula digital conectada al sistema, puede configurarla para que envíe automáticamente el peso al campo de gramos.
+            </div>
+            
+            <div class="screenshot">
+                <p>[Imagen: Ventana de ingreso de gramos para producto por peso]</p>
+            </div>
+        </div>
+        
+        <h3>4.3 Métodos de Pago</h3>
+        <div class="feature-card">
+            <p>El sistema admite diferentes formas de pago:</p>
+            
+            <h4>Pago en Efectivo</h4>
+            <div class="step">
+                Seleccione "Efectivo" como método de pago.
+            </div>
+            
+            <div class="step">
+                Ingrese el monto recibido del cliente en el campo "Monto recibido".
+            </div>
+            
+            <div class="step">
+                El sistema calculará automáticamente el cambio a devolver.
+            </div>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> Para agilizar la operación, puede hacer clic en los botones de denominación rápida ($100, $200, $500, etc.).
+            </div>
+            
+            <h4>Pago con Tarjeta</h4>
+            <div class="step">
+                Seleccione "Tarjeta" como método de pago.
+            </div>
+            
+            <div class="step">
+                Especifique si es tarjeta de crédito o débito (opcional).
+            </div>
+            
+            <div class="step">
+                Si dispone de terminal de pago integrada, siga las instrucciones en pantalla.
+            </div>
+            
+            <h4>Pago por Transferencia</h4>
+            <div class="step">
+                Seleccione "Transferencia" como método de pago.
+            </div>
+            
+            <div class="step">
+                Opcionalmente, puede ingresar un número de referencia o comprobante.
+            </div>
+            
+            <div class="warning">
+                <strong>Importante:</strong> Verifique que la transferencia se haya acreditado antes de finalizar la venta.
+            </div>
+        </div>
+        
+        <h3>4.4 Historial de Ventas</h3>
+        <div class="feature-card">
+            <p>Para consultar ventas anteriores:</p>
+            
+            <div class="step">
+                En la pantalla de Ventas, haga clic en el botón "Historial de Ventas".
+            </div>
+            
+            <div class="step">
+                Utilice los filtros disponibles para buscar ventas específicas:
+                <ul>
+                    <li><strong>Rango de fechas:</strong> Seleccione el período que desea consultar.</li>
+                    <li><strong>Método de pago:</strong> Filtre por tipo de pago (efectivo, tarjeta, transferencia).</li>
+                    <li><strong>Monto:</strong> Busque ventas por valor total.</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Haga clic en una venta de la lista para ver sus detalles completos.
+            </div>
+            
+            <div class="step">
+                Desde la vista de detalles, puede:
+                <ul>
+                    <li>Reimprimir el ticket de venta.</li>
+                    <li>Exportar la información a PDF o Excel.</li>
+                    <li>Ver los productos incluidos en la venta.</li>
+                </ul>
+            </div>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> Utilice la función de exportación para generar reportes personalizados de ventas por período.
+            </div>
+            
+            <div class="screenshot">
+                <p>[Imagen: Pantalla de historial de ventas con filtros aplicados]</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="reportes">
+        <h2>5. Reportes y Estadísticas</h2>
+        <div class="feature-card">
+            <p>La sección de Reportes le permite analizar el desempeño de su negocio:</p>
+            
+            <h3>5.1 Tipos de Reportes Disponibles</h3>
+            
+            <div class="step">
+                Acceda a la sección "Reportes" desde el menú lateral.
+            </div>
+            
+            <div class="step">
+                Seleccione el tipo de reporte que desea generar:
+                <ul>
+                    <li><strong>Reporte de Ventas:</strong> Análisis detallado de las ventas realizadas.</li>
+                    <li><strong>Reporte de Inventario:</strong> Estado actual del stock y movimientos.</li>
+                    <li><strong>Reporte de Ganancias:</strong> Análisis de rentabilidad por producto o categoría.</li>
+                    <li><strong>Reporte de Caja:</strong> Movimientos de caja y balance.</li>
+                </ul>
+            </div>
+            
+            <div class="screenshot">
+                <p>[Imagen: Menú de selección de tipos de reportes]</p>
+            </div>
+        </div>
+        
+        <h3>5.2 Generación de Reportes</h3>
+        <div class="feature-card">
+            <p>Para generar un reporte personalizado:</p>
+            
+            <div class="step">
+                Seleccione el tipo de reporte deseado.
+            </div>
+            
+            <div class="step">
+                Configure los parámetros del reporte:
+                <ul>
+                    <li><strong>Rango de fechas:</strong> Período que desea analizar.</li>
+                    <li><strong>Categorías:</strong> Filtrar por categorías específicas de productos.</li>
+                    <li><strong>Métodos de pago:</strong> Filtrar por forma de pago.</li>
+                    <li><strong>Agrupación:</strong> Cómo desea agrupar los datos (por día, semana, mes, etc.).</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Haga clic en "Generar Reporte" para visualizar los resultados.
+            </div>
+            
+            <div class="step">
+                Explore los datos presentados en formato de tabla y gráficos.
+            </div>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> Guarde las configuraciones de reportes frecuentes como "Favoritos" para acceder rápidamente a ellos en el futuro.
+            </div>
+            
+            <div class="screenshot">
+                <p>[Imagen: Pantalla de configuración de parámetros de reporte]</p>
+            </div>
+        </div>
+        
+        <h3>5.3 Análisis de Tendencias</h3>
+        <div class="feature-card">
+            <p>Para analizar tendencias y patrones en sus datos:</p>
+            
+            <div class="step">
+                En la vista de reporte, observe los gráficos de tendencias que muestran la evolución temporal de los datos.
+            </div>
+            
+            <div class="step">
+                Utilice las opciones de comparación para contrastar períodos:
+                <ul>
+                    <li>Compare el mes actual con el mes anterior.</li>
+                    <li>Compare con el mismo período del año anterior.</li>
+                    <li>Analice tendencias por día de la semana.</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Identifique productos destacados:
+                <ul>
+                    <li>Productos más vendidos.</li>
+                    <li>Productos con mayor rentabilidad.</li>
+                    <li>Productos con stock bajo o crítico.</li>
+                </ul>
+            </div>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> Preste atención a los indicadores de tendencia (flechas hacia arriba o abajo) que muestran si un valor está mejorando o empeorando respecto al período anterior.
+            </div>
+            
+            <div class="screenshot">
+                <p>[Imagen: Gráficos de tendencias de ventas con comparativa temporal]</p>
+            </div>
+        </div>
+        
+        <h3>5.4 Exportación e Impresión</h3>
+        <div class="feature-card">
+            <p>Para guardar o compartir sus reportes:</p>
+            
+            <div class="step">
+                Una vez generado el reporte, haga clic en el botón "Exportar" en la parte superior derecha.
+            </div>
+            
+            <div class="step">
+                Seleccione el formato deseado:
+                <ul>
+                    <li><strong>PDF:</strong> Para imprimir o compartir el reporte completo.</li>
+                    <li><strong>Excel:</strong> Para realizar análisis adicionales de los datos.</li>
+                    <li><strong>CSV:</strong> Para importar los datos a otros sistemas.</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Para imprimir directamente, haga clic en el botón "Imprimir" y seleccione su impresora.
+            </div>
+            
+            <div class="step">
+                Opcionalmente, puede enviar el reporte por correo electrónico haciendo clic en "Enviar por Email".
+            </div>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> Configure reportes automáticos programados para recibir información clave de su negocio periódicamente por correo electrónico.
+            </div>
+        </div>
+    </section>
+
+    <section id="caja">
+        <h2>6. Control de Caja</h2>
+        <div class="feature-card">
+            <p>El módulo de Control de Caja le permite gestionar los movimientos de dinero:</p>
+            
+            <h3>6.1 Apertura de Caja</h3>
+            
+            <div class="step">
+                Acceda a la sección "Caja" desde el menú lateral.
+            </div>
+            
+            <div class="step">
+                Si la caja está cerrada, verá un botón "Abrir Caja". Haga clic en él.
+            </div>
+            
+            <div class="step">
+                Ingrese el monto inicial con el que comienza operaciones.
+            </div>
+            
+            <div class="step">
+                Opcionalmente, agregue una nota o comentario.
+            </div>
+            
+            <div class="step">
+                Haga clic en "Confirmar Apertura" para iniciar las operaciones de caja.
+            </div>
+            
+            <div class="warning">
+                <strong>Importante:</strong> Debe abrir la caja antes de poder registrar ventas o movimientos de dinero.
+            </div>
+            
+            <div class="screenshot">
+                <p>[Imagen: Formulario de apertura de caja]</p>
+            </div>
+        </div>
+        
+        <h3>6.2 Registrar Movimientos de Caja</h3>
+        <div class="feature-card">
+            <p>Para registrar entradas o salidas de dinero que no sean ventas:</p>
+            
+            <div class="step">
+                En la pantalla de Caja, haga clic en "Nuevo Movimiento".
+            </div>
+            
+            <div class="step">
+                Seleccione el tipo de movimiento:
+                <ul>
+                    <li><strong>Ingreso:</strong> Para entradas de dinero (depósitos, préstamos, etc.).</li>
+                    <li><strong>Egreso:</strong> Para salidas de dinero (pagos a proveedores, gastos, etc.).</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Ingrese el monto del movimiento.
+            </div>
+            
+            <div class="step">
+                Seleccione una categoría para el movimiento (opcional).
+            </div>
+            
+            <div class="step">
+                Agregue una descripción detallada que explique el motivo del movimiento.
+            </div>
+            
+            <div class="step">
+                Haga clic en "Guardar Movimiento" para registrarlo.
+            </div>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> Cree categorías personalizadas para clasificar sus movimientos de caja y facilitar el análisis posterior.
+            </div>
+            
+            <div class="screenshot">
+                <p>[Imagen: Formulario de registro de movimiento de caja]</p>
+            </div>
+        </div>
+        
+        <h3>6.3 Cierre de Caja</h3>
+        <div class="feature-card">
+            <p>Al finalizar las operaciones del día, debe realizar el cierre de caja:</p>
+            
+            <div class="step">
+                En la pantalla de Caja, haga clic en el botón "Cerrar Caja".
+            </div>
+            
+            <div class="step">
+                El sistema mostrará un resumen de las operaciones del día:
+                <ul>
+                    <li>Monto inicial (apertura)</li>
+                    <li>Total de ventas por método de pago</li>
+                    <li>Otros ingresos registrados</li>
+                    <li>Egresos registrados</li>
+                    <li>Saldo final calculado por el sistema</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Realice el conteo físico del dinero en caja y registre el monto real.
+            </div>
+            
+            <div class="step">
+                El sistema calculará automáticamente si hay diferencia (faltante o sobrante).
+            </div>
+            
+            <div class="step">
+                Si existe diferencia, puede registrar una observación explicando el motivo.
+            </div>
+            
+            <div class="step">
+                Haga clic en "Confirmar Cierre" para finalizar el proceso.
+            </div>
+            
+            <div class="warning">
+                <strong>Importante:</strong> Una vez cerrada la caja, no podrá registrar más operaciones hasta que realice una nueva apertura.
+            </div>
+            
+            <div class="screenshot">
+                <p>[Imagen: Pantalla de cierre de caja con resumen de operaciones]</p>
+            </div>
+        </div>
+        
+        <h3>6.4 Reportes de Caja</h3>
+        <div class="feature-card">
+            <p>Para consultar el historial de operaciones de caja:</p>
+            
+            <div class="step">
+                En la pantalla de Caja, haga clic en la pestaña "Historial de Caja".
+            </div>
+            
+            <div class="step">
+                Utilice los filtros para buscar operaciones específicas:
+                <ul>
+                    <li>Rango de fechas</li>
+                    <li>Usuario que realizó la operación</li>
+                    <li>Tipo de operación (apertura, cierre, movimiento)</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Haga clic en una operación para ver sus detalles completos.
+            </div>
+            
+            <div class="step">
+                Puede generar un reporte completo haciendo clic en "Exportar Reporte".
+            </div>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> Revise periódicamente el historial de caja para identificar patrones o anomalías en los movimientos de dinero.
+            </div>
+        </div>
+    </section>
+</body>
+</html>

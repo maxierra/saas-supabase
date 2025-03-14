@@ -363,6 +363,11 @@ const DashboardPage: NextPage = () => {
               case 'mercado_pago':
               case 'mercadopago':
                 return <CurrencyDollarIcon className="h-6 w-6 sm:h-8 sm:w-8" />;
+              case 'modo':
+                return <CurrencyDollarIcon className="h-6 w-6 sm:h-8 sm:w-8" />;
+              case 'cuenta dni':
+              case 'cuenta_dni':
+                return <CreditCardIcon className="h-6 w-6 sm:h-8 sm:w-8" />;
               default:
                 return <CurrencyDollarIcon className="h-6 w-6 sm:h-8 sm:w-8" />;
             }
@@ -370,23 +375,26 @@ const DashboardPage: NextPage = () => {
           
           const getColorForMethod = (method: string): {bg: string, text: string} => {
             switch(method.toLowerCase()) {
-              case 'efectivo':
-                return {bg: 'bg-indigo-100', text: 'text-indigo-600'};
               case 'tarjeta_credito':
               case 'tarjeta_crédito':
               case 'tarjeta crédito':
               case 'tarjeta credito':
-                return {bg: 'bg-emerald-100', text: 'text-emerald-600'};
+                return {bg: 'bg-emerald-500', text: 'text-white'};
+              case 'efectivo':
+                return {bg: 'bg-blue-500', text: 'text-white'};
+              case 'cuenta dni':
+                return {bg: 'bg-pink-500', text: 'text-white'};
+              case 'mercado pago':
+                return {bg: 'bg-yellow-500', text: 'text-gray-900'};
               case 'tarjeta_debito':
               case 'tarjeta_débito':
               case 'tarjeta débito':
               case 'tarjeta debito':
-                return {bg: 'bg-amber-100', text: 'text-amber-600'};
-              case 'mercado_pago':
-              case 'mercadopago':
-                return {bg: 'bg-blue-100', text: 'text-blue-600'};
+                return {bg: 'bg-orange-500', text: 'text-white'};
+              case 'modo':
+                return {bg: 'bg-indigo-500', text: 'text-white'};
               default:
-                return {bg: 'bg-gray-100', text: 'text-gray-600'};
+                return {bg: 'bg-gray-500', text: 'text-white'};
             }
           };
           
@@ -404,8 +412,7 @@ const DashboardPage: NextPage = () => {
           // Ordenar por monto, de mayor a menor
           paymentMethodAmountsArray.sort((a, b) => b.amount - a.amount);
           
-          // Limitar a los 4 principales métodos de pago
-          setPaymentMethodAmounts(paymentMethodAmountsArray.slice(0, 4));
+          setPaymentMethodAmounts(paymentMethodAmountsArray);
         } else {
           setPaymentMethods([]);
           setPaymentMethodAmounts([]);

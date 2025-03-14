@@ -150,17 +150,36 @@ const DashboardPage = () => {
             averageTicket
           }));
 
-          // Calcular métodos de pago
+          // Obtener todos los métodos de pago configurados
+          const { data: metodosConfigurados, error: metodosError } = await supabase
+            .from('metodos_pago')
+            .select('*')
+            .eq('uid', uid);
+
+          if (metodosError) {
+            console.error('Error al cargar métodos de pago:', metodosError);
+          }
+
+          // Inicializar conteo de métodos de pago
           const methodCounts: { [key: string]: number } = {};
+          
+          // Inicializar todos los métodos configurados con 0
+          if (metodosConfigurados) {
+            metodosConfigurados.forEach(metodo => {
+              methodCounts[metodo.nombre] = 0;
+            });
+          }
+
+          // Contar las ventas por método de pago
           ventasHoy.forEach(venta => {
             const method = venta.metodo_pago || 'No especificado';
-            methodCounts[method] = (methodCounts[method] || 0) + 1;
+            methodCounts[method] = (methodCounts[method] || 0) + (venta.total || 0);
           });
 
-          const paymentMethodStats = Object.entries(methodCounts).map(([method, count]) => ({
+          const paymentMethodStats = Object.entries(methodCounts).map(([method, amount]) => ({
             method,
-            count,
-            percentage: (count / totalTransactions) * 100
+            count: amount,
+            percentage: totalSales > 0 ? (amount / totalSales) * 100 : 0
           }));
 
           setPaymentMethods(paymentMethodStats);
@@ -203,16 +222,20 @@ const DashboardPage = () => {
       label: 'Métodos de Pago',
       data: paymentMethods.map(pm => pm.count),
       backgroundColor: [
-        'rgba(79, 70, 229, 0.7)',
-        'rgba(16, 185, 129, 0.7)',
-        'rgba(245, 158, 11, 0.7)',
-        'rgba(99, 102, 241, 0.7)',
+        'rgba(79, 70, 229, 0.7)',  // TARJETA DE CREDITO - indigo
+        'rgba(34, 197, 94, 0.7)',   // TARJETA DE DEBITO - green
+        'rgba(99, 102, 241, 0.7)',  // MODO - purple
+        'rgba(59, 130, 246, 0.7)',  // efectivo - blue
+        'rgba(245, 158, 11, 0.7)',  // MERCADO PAGO - yellow
+        'rgba(236, 72, 153, 0.7)',  // CUENTA DNI - pink
       ],
       borderColor: [
-        'rgba(79, 70, 229, 1)',
-        'rgba(16, 185, 129, 1)',
-        'rgba(245, 158, 11, 1)',
-        'rgba(99, 102, 241, 1)',
+        'rgba(79, 70, 229, 1)',    // TARJETA DE CREDITO - indigo
+        'rgba(34, 197, 94, 1)',     // TARJETA DE DEBITO - green
+        'rgba(99, 102, 241, 1)',    // MODO - purple
+        'rgba(59, 130, 246, 1)',    // efectivo - blue
+        'rgba(245, 158, 11, 1)',    // MERCADO PAGO - yellow
+        'rgba(236, 72, 153, 1)',    // CUENTA DNI - pink
       ],
       borderWidth: 1,
     }],

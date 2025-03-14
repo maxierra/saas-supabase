@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Completo del Sistema</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        .feature-list {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+        .feature-list li {
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .feature-list li:before {
+            content: '•';
+            position: absolute;
+            left: -15px;
+            color: #007bff;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .detail-list {
+            padding-left: 25px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Manual Completo del Sistema de Gestión</h1>
+
+    <div class="section">
+        <h2>1. Dashboard</h2>
+        <p>El panel principal del sistema proporciona una vista general de su negocio:</p>
+        <ul class="feature-list">
+            <li>Resumen de ventas diarias y mensuales
+                <p class="description">Visualice el total de ventas del día y del mes en curso, con comparativas respecto a períodos anteriores.</p>
+            </li>
+            <li>Gráficos de rendimiento
+                <p class="description">Analice tendencias de ventas, productos más vendidos y horas pico de actividad mediante gráficos interactivos.</p>
+            </li>
+            <li>Indicadores clave del negocio
+                <p class="description">Monitoree métricas importantes como el ticket promedio, margen de ganancia y rotación de inventario.</p>
+            </li>
+            <li>Acceso rápido a todas las funciones
+                <p class="description">Navegue fácilmente a cualquier módulo del sistema desde el menú principal.</p>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>2. Productos</h2>
+        <p>Gestione su inventario de manera eficiente:</p>
+        <ul class="feature-list">
+            <li>Registro de productos por unidad y por peso
+                <p class="description">Configure productos que se venden por unidad (pieza, caja, paquete) o por peso (kilogramo, gramo).
+                <ul class="detail-list">
+                    <li>Para productos por unidad: especifique precio unitario y stock disponible</li>
+                    <li>Para productos por peso: configure precio por kilogramo y peso mínimo de venta</li>
+                </ul>
+                </p>
+            </li>
+            <li>Control de stock
+                <p class="description">Mantenga un registro actualizado de su inventario con:
+                <ul class="detail-list">
+                    <li>Alertas de stock bajo</li>
+                    <li>Registro automático de movimientos</li>
+                    <li>Ajustes de inventario con notas</li>
+                </ul>
+                </p>
+            </li>
+            <li>Precios de compra y venta
+                <p class="description">Gestione sus márgenes de ganancia estableciendo:
+                <ul class="detail-list">
+                    <li>Precio de compra al proveedor</li>
+                    <li>Precio de venta al público</li>
+                    <li>Precios especiales por volumen</li>
+                </ul>
+                </p>
+            </li>
+            <li>Categorización de productos
+                <p class="description">Organice su catálogo mediante categorías y subcategorías personalizables para una búsqueda más eficiente.</p>
+            </li>
+            <li>Códigos de producto únicos
+                <p class="description">Asigne códigos de barras o referencias únicas a cada producto para agilizar la búsqueda y el proceso de venta.</p>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>3. Ventas</h2>
+        <p>Realice transacciones de manera rápida y segura:</p>
+        <ul class="feature-list">
+            <li>Registro de ventas por unidad y por peso
+                <p class="description">Procese ventas de cualquier tipo de producto:
+                <ul class="detail-list">
+                    <li>Escaneo de código de barras</li>
+                    <li>Búsqueda rápida por nombre o código</li>
+                    <li>Captura de peso desde báscula digital</li>
+                </ul>
+                </p>
+            </li>
+            <li>Múltiples métodos de pago
+                <p class="description">Acepte diferentes formas de pago:
+                <ul class="detail-list">
+                    <li>Efectivo con cálculo automático de cambio</li>
+                    <li>Tarjetas de débito/crédito</li>
+                    <li>Transferencias electrónicas</li>
+                </ul>
+                </p>
+            </li>
+            <li>Cálculo automático de cambio
+                <p class="description">El sistema calcula instantáneamente el cambio a devolver al cliente, minimizando errores en las transacciones.</p>
+            </li>
+            <li>Generación de tickets
+                <p class="description">Imprima comprobantes de venta personalizados con:
+                <ul class="detail-list">
+                    <li>Datos fiscales del negocio</li>
+                    <li>Detalle de productos y precios</li>
+                    <li>Información de contacto y políticas</li>
+                </ul>
+                </p>
+            </li>
+            <li>Historial de ventas
+                <p class="description">Acceda a un registro detallado de todas las transacciones con opciones de búsqueda y filtrado avanzado.</p>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>4. Caja</h2>
+        <p>Control completo de sus movimientos de dinero:</p>
+        <ul class="feature-list">
+            <li>Apertura y cierre de caja
+                <p class="description">Gestione los turnos de trabajo con:
+                <ul class="detail-list">
+                    <li>Registro de monto inicial</li>
+                    <li>Control de entradas y salidas</li>
+                    <li>Cierre con conteo de efectivo</li>
+                </ul>
+                </p>
+            </li>
+            <li>Registro de ingresos y egresos
+                <p class="description">Documente todos los movimientos de dinero:
+                <ul class="detail-list">
+                    <li>Ventas en diferentes métodos de pago</li>
+                    <li>Gastos y retiros de efectivo</li>
+                    <li>Pagos a proveedores</li>
+                </ul>
+                </p>
+            </li>
+            <li>Balance diario
+                <p class="description">Obtenga un resumen detallado de las operaciones del día con desglose por forma de pago y tipo de movimiento.</p>
+            </li>
+            <li>Historial de movimientos
+                <p class="description">Consulte el registro histórico de todas las operaciones de caja con opciones de filtrado por fecha y tipo.</p>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>5. Reportes</h2>
+        <p>Análisis detallado de su negocio:</p>
+        <ul class="feature-list">
+            <li>Reportes de ventas
+                <p class="description">Genere informes detallados de:
+                <ul class="detail-list">
+                    <li>Ventas por período</li>
+                    <li>Ventas por categoría</li>
+                    <li>Ventas por método de pago</li>
+                    <li>Comparativas entre períodos</li>
+                </ul>
+                </p>
+            </li>
+            <li>Análisis de inventario
+                <p class="description">Monitoree su stock con reportes de:
+                <ul class="detail-list">
+                    <li>Productos con bajo stock</li>
+                    <li>Rotación de inventario</li>
+                    <li>Valoración de existencias</li>
+                </ul>
+                </p>
+            </li>
+            <li>Estadísticas de productos más vendidos
+                <p class="description">Identifique tendencias y productos exitosos con análisis de:
+                <ul class="detail-list">
+                    <li>Top de productos por unidades</li>
+                    <li>Top de productos por ingresos</li>
+                    <li>Productos con mayor margen</li>
+                </ul>
+                </p>
+            </li>
+            <li>Reportes de ganancias
+                <p class="description">Analice la rentabilidad de su negocio con informes de:
+                <ul class="detail-list">
+                    <li>Márgenes por producto</li>
+                    <li>Ganancias por período</li>
+                    <li>Análisis de costos</li>
+                </ul>
+                </p>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>6. Proveedores</h2>
+        <p>Gestione sus relaciones con proveedores:</p>
+        <ul class="feature-list">
+            <li>Registro de proveedores
+                <p class="description">Mantenga una base de datos completa con:
+                <ul class="detail-list">
+                    <li>Datos fiscales y de contacto</li>
+                    <li>Catálogo de productos</li>
+                    <li>Condiciones comerciales</li>
+                </ul>
+                </p>
+            </li>
+            <li>Control de pedidos
+                <p class="description">Gestione el ciclo completo de compras:
+                <ul class="detail-list">
+                    <li>Creación de órdenes de compra</li>
+                    <li>Seguimiento de entregas</li>
+                    <li>Registro de recepciones</li>
+                </ul>
+                </p>
+            </li>
+            <li>Historial de compras
+                <p class="description">Acceda al registro histórico de todas las operaciones con cada proveedor.</p>
+            </li>
+            <li>Información de contacto
+                <p class="description">Mantenga actualizada la información de contacto y notas importantes sobre cada proveedor.</p>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>7. Etiquetas</h2>
+        <p>Genere e imprima etiquetas para sus productos:</p>
+        <ul class="feature-list">
+            <li>Diseño personalizado de etiquetas
+                <p class="description">Cree plantillas personalizadas con:
+                <ul class="detail-list">
+                    <li>Logo del negocio</li>
+                    <li>Información del producto</li>
+                    <li>Diseños adaptables</li>
+                </ul>
+                </p>
+            </li>
+            <li>Códigos de barras
+                <p class="description">Genere e imprima códigos de barras:
+                <ul class="detail-list">
+                    <li>Códigos EAN-13</li>
+                    <li>Códigos internos</li>
+                    <li>Códigos QR</li>
+                </ul>
+                </p>
+            </li>
+            <li>Precios y descripciones
+                <p class="description">Incluya información relevante como:
+                <ul class="detail-list">
+                    <li>Precio de venta</li>
+                    <li>Descripción del producto</li>
+                    <li>Información adicional</li>
+                </ul>
+                </p>
+            </li>
+            <li>Impresión por lotes
+                <p class="description">Optimice el proceso de etiquetado con:
+                <ul class="detail-list">
+                    <li>Impresión múltiple</li>
+                    <li>Selección por categorías</li>
+                    <li>Vista previa de impresión</li>
+                </ul>
+                </p>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>8. Configuraciones</h2>
+        <p>Personalice el sistema según sus necesidades:</p>
+        <ul class="feature-list">
+            <li>Información del negocio
+                <p class="description">Configure los datos básicos:
+                <ul class="detail-list">
+                    <li>Datos fiscales</li>
+                    <li>Logotipo y marca</li>
+                    <li>Información de contacto</li>
+                </ul>
+                </p>
+            </li>
+            <li>Configuración de impresión
+                <p class="description">Personalice sus documentos:
+                <ul class="detail-list">
+                    <li>Formato de tickets</li>
+                    <li>Configuración de impresora</li>
+                    <li>Plantillas personalizadas</li>
+                </ul>
+                </p>
+            </li>
+            <li>Gestión de usuarios
+                <p class="description">Administre el acceso al sistema:
+                <ul class="detail-list">
+                    <li>Creación de usuarios</li>
+                    <li>Asignación de roles</li>
+                    <li>Permisos específicos</li>
+                </ul>
+                </p>
+            </li>
+            <li>Preferencias del sistema
+                <p class="description">Ajuste el comportamiento del sistema:
+                <ul class="detail-list">
+                    <li>Opciones de visualización</li>
+                    <li>Alertas y notificaciones</li>
+                    <li>Copias de seguridad</li>
+                </ul>
+                </p>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

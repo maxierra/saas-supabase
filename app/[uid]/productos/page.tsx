@@ -282,7 +282,8 @@ export default function ProductosPage() {
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDelete}
         isDeleting={isDeleting}
-        itemName={productToDelete?.nombre || ''}
+        title="Eliminar Producto"
+        message={`¿Estás seguro que deseas eliminar el producto "${productToDelete?.nombre}"? Esta acción no se puede deshacer.`}
       />
     </div>
   );

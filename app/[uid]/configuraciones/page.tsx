@@ -30,6 +30,16 @@ interface DatosComercio {
   updated_at: string;
 }
 
+// Definimos la interfaz para los medios de pago
+interface MedioPago {
+  id: string;
+  uid: string;
+  tipo: string;
+  detalles: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export default function ConfiguracionesPage() {
   const params = useParams();
   const uid = params.uid as string;
@@ -62,6 +72,18 @@ export default function ConfiguracionesPage() {
   const [cuitComercio, setCuitComercio] = useState('');
   const [descripcionComercio, setDescripcionComercio] = useState('');
   const [numeroFacturacion, setNumeroFacturacion] = useState(1);
+  
+  // Estados para el formulario de medios de pago
+  const [tipoMedioPago, setTipoMedioPago] = useState('');
+  const [detallesMedioPago, setDetallesMedioPago] = useState('');
+  const [isSubmittingPago, setIsSubmittingPago] = useState(false);
+  const [errorPago, setErrorPago] = useState<string | null>(null);
+  const [editModePago, setEditModePago] = useState(false);
+  const [currentMedioPagoId, setCurrentMedioPagoId] = useState<string | null>(null);
+  
+  // Estados para los medios de pago
+  const [mediosPago, setMediosPago] = useState<MedioPago[]>([]);
+  const [loadingPago, setLoadingPago] = useState(true);
   
   // Cargar categorías desde Supabase
   const loadCategorias = useCallback(async () => {
@@ -120,11 +142,32 @@ export default function ConfiguracionesPage() {
     }
   }, [uid]);
   
+  // Cargar medios de pago desde Supabase
+  const loadMediosPago = useCallback(async () => {
+    try {
+      setLoadingPago(true);
+      
+      const { data, error } = await supabase
+        .from('medios_pago')
+        .select('*')
+        .eq('uid', uid);
+      
+      if (error) throw error;
+      
+      setMediosPago(data || []);
+    } catch (err) {
+      console.error('Error al cargar medios de pago:', err);
+    } finally {
+      setLoadingPago(false);
+    }
+  }, [uid]);
+  
   // Cargar datos al montar el componente
   useEffect(() => {
     loadCategorias();
     loadDatosComercio();
-  }, [loadCategorias, loadDatosComercio]);
+    loadMediosPago();
+  }, [loadCategorias, loadDatosComercio, loadMediosPago]);
   
   // Función para guardar una nueva categoría
   const handleSubmit = async (e: React.FormEvent) => {
@@ -239,6 +282,105 @@ export default function ConfiguracionesPage() {
     } finally {
       setIsSubmittingComercio(false);
     }
+  };
+  
+  // Función para agregar o actualizar un medio de pago
+  const handleSubmitPago = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!tipoMedioPago.trim()) {
+      setErrorPago('El tipo de medio de pago es obligatorio');
+      return;
+    }
+    
+    setIsSubmittingPago(true);
+    setErrorPago(null);
+    
+    try {
+      if (editModePago && currentMedioPagoId) {
+        // Actualizar medio de pago existente
+        const { error } = await supabase
+          .from('medios_pago')
+          .update({
+            tipo: tipoMedioPago,
+            detalles: detallesMedioPago || null,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', currentMedioPagoId)
+          .eq('uid', uid);
+        
+        if (error) throw error;
+      } else {
+        // Insertar nuevo medio de pago
+        const { error } = await supabase
+          .from('medios_pago')
+          .insert({
+            uid,
+            tipo: tipoMedioPago,
+            detalles: detallesMedioPago || null,
+          });
+        
+        if (error) throw error;
+      }
+      
+      // Limpiar formulario
+      setTipoMedioPago('');
+      setDetallesMedioPago('');
+      setEditModePago(false);
+      setCurrentMedioPagoId(null);
+      
+      // Recargar medios de pago
+      await loadMediosPago();
+    } catch (err) {
+      console.error('Error al guardar medio de pago:', err);
+      setErrorPago('No se pudo guardar el medio de pago. Por favor, intenta de nuevo.');
+    } finally {
+      setIsSubmittingPago(false);
+    }
+  };
+
+  // Función para editar un medio de pago
+  const handleEditPago = (medioPago: MedioPago) => {
+    setTipoMedioPago(medioPago.tipo);
+    setDetallesMedioPago(medioPago.detalles || '');
+    setEditModePago(true);
+    setCurrentMedioPagoId(medioPago.id);
+  };
+
+  // Función para eliminar un medio de pago
+  const handleDeletePago = async (id: string) => {
+    if (!confirm('¿Estás seguro de que deseas eliminar este medio de pago? Esta acción no se puede deshacer.')) {
+      return;
+    }
+    
+    try {
+      setLoadingPago(true);
+      
+      const { error } = await supabase
+        .from('medios_pago')
+        .delete()
+        .eq('id', id)
+        .eq('uid', uid);
+      
+      if (error) throw error;
+      
+      // Recargar medios de pago
+      await loadMediosPago();
+    } catch (err) {
+      console.error('Error al eliminar medio de pago:', err);
+      setErrorPago('No se pudo eliminar el medio de pago. Por favor, intenta de nuevo.');
+    } finally {
+      setLoadingPago(false);
+    }
+  };
+
+  // Función para cancelar la edición de medio de pago
+  const handleCancelPago = () => {
+    setTipoMedioPago('');
+    setDetallesMedioPago('');
+    setEditModePago(false);
+    setCurrentMedioPagoId(null);
+    setErrorPago(null);
   };
   
   // Función para editar una categoría
@@ -635,6 +777,130 @@ export default function ConfiguracionesPage() {
                   </div>
                 </div>
               </div>
+            )}
+          </div>
+        </div>
+      </div>
+      
+      {/* Sección de Medios de Pago */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Formulario de medios de pago */}
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="p-4 sm:p-6 border-b">
+            <h2 className="text-lg font-semibold text-gray-900">
+              {editModePago ? 'Editar Medio de Pago' : 'Nuevo Medio de Pago'}
+            </h2>
+          </div>
+          
+          <div className="p-4 sm:p-6">
+            {errorPago && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm">
+                {errorPago}
+              </div>
+            )}
+            
+            <form onSubmit={handleSubmitPago}>
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="tipoMedioPago" className="block text-sm font-medium text-gray-700 mb-1">
+                    Tipo de Medio de Pago *
+                  </label>
+                  <input
+                    type="text"
+                    id="tipoMedioPago"
+                    value={tipoMedioPago}
+                    onChange={(e) => setTipoMedioPago(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="Ej: Tarjeta de Crédito"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="detallesMedioPago" className="block text-sm font-medium text-gray-700 mb-1">
+                    Detalles
+                  </label>
+                  <input
+                    type="text"
+                    id="detallesMedioPago"
+                    value={detallesMedioPago}
+                    onChange={(e) => setDetallesMedioPago(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="Ej: Número de tarjeta"
+                  />
+                </div>
+                
+                <div className="flex justify-end space-x-3 pt-4">
+                  {editModePago && (
+                    <button
+                      type="button"
+                      onClick={handleCancelPago}
+                      className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      disabled={isSubmittingPago}
+                    >
+                      Cancelar
+                    </button>
+                  )}
+                  <button
+                    type="submit"
+                    className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    disabled={isSubmittingPago}
+                  >
+                    {isSubmittingPago ? 'Guardando...' : editModePago ? 'Actualizar' : 'Agregar Medio de Pago'}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        
+        {/* Lista de medios de pago */}
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="p-4 sm:p-6 border-b">
+            <h2 className="text-lg font-semibold text-gray-900">Medios de Pago</h2>
+          </div>
+          
+          <div className="p-4 sm:p-6">
+            {loadingPago ? (
+              <div className="text-center py-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-600 mx-auto"></div>
+                <p className="mt-2 text-sm text-gray-500">Cargando medios de pago...</p>
+              </div>
+            ) : mediosPago.length === 0 ? (
+              <div className="text-center py-4">
+                <p className="text-sm text-gray-500">No hay medios de pago registrados. Agrega tu primer medio de pago.</p>
+              </div>
+            ) : (
+              <ul className="divide-y divide-gray-200">
+                {mediosPago.map((medioPago) => (
+                  <li key={medioPago.id} className="py-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <div>
+                          <h3 className="text-sm font-medium text-gray-900">{medioPago.tipo}</h3>
+                          {medioPago.detalles && (
+                            <p className="text-xs text-gray-500 mt-1">{medioPago.detalles}</p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => handleEditPago(medioPago)}
+                          className="text-xs text-indigo-600 hover:text-indigo-900"
+                        >
+                          Editar
+                        </button>
+                        <button
+                          onClick={() => handleDeletePago(medioPago.id)}
+                          className="text-xs text-red-600 hover:text-red-900"
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             )}
           </div>
         </div>

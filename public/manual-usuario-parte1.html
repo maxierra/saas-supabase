@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Usuario - Sistema de Gestión</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+            margin-top: 1.5em;
+        }
+        h1 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 5px;
+        }
+        .feature-card {
+            background-color: #f9f9f9;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 5px 5px 0;
+        }
+        .tip {
+            background-color: #e8f4f8;
+            border-left: 4px solid #2ecc71;
+            padding: 10px 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        .warning {
+            background-color: #fff5e6;
+            border-left: 4px solid #e67e22;
+            padding: 10px 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        .step {
+            background-color: #f0f7ff;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            counter-increment: step-counter;
+        }
+        .step::before {
+            content: "Paso " counter(step-counter) ": ";
+            font-weight: bold;
+            color: #3498db;
+        }
+        code {
+            background-color: #f0f0f0;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .screenshot {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border: 1px dashed #ccc;
+            text-align: center;
+            margin: 15px 0;
+        }
+        .screenshot p {
+            font-style: italic;
+            margin-top: 5px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Manual de Usuario - Sistema de Gestión</h1>
+    
+    <div class="feature-card">
+        <p>Bienvenido al Manual de Usuario del Sistema de Gestión. Este manual le guiará paso a paso en el uso de cada una de las pantallas y funcionalidades del sistema, permitiéndole aprovechar al máximo todas sus características.</p>
+    </div>
+
+    <section id="acceso">
+        <h2>1. Acceso al Sistema</h2>
+        
+        <h3>1.1 Registro de Cuenta</h3>
+        <div class="feature-card">
+            <p>Para comenzar a utilizar el sistema, primero debe crear una cuenta:</p>
+            
+            <div class="step">
+                Acceda a la página de registro haciendo clic en "Crear cuenta" desde la pantalla de inicio de sesión.
+            </div>
+            
+            <div class="step">
+                Complete el formulario con sus datos personales:
+                <ul>
+                    <li>Nombre completo</li>
+                    <li>Correo electrónico (será su nombre de usuario)</li>
+                    <li>Contraseña (mínimo 8 caracteres, incluyendo letras y números)</li>
+                    <li>Información del negocio (nombre, dirección, etc.)</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Haga clic en el botón "Registrarse" para crear su cuenta.
+            </div>
+            
+            <div class="step">
+                Recibirá un correo electrónico de confirmación. Haga clic en el enlace proporcionado para verificar su cuenta.
+            </div>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> Utilice una contraseña segura que combine letras mayúsculas, minúsculas, números y símbolos. Guárdela en un lugar seguro.
+            </div>
+            
+            <div class="screenshot">
+                <p>[Imagen: Pantalla de registro con el formulario completado]</p>
+            </div>
+        </div>
+        
+        <h3>1.2 Inicio de Sesión</h3>
+        <div class="feature-card">
+            <p>Una vez que tenga su cuenta creada, puede acceder al sistema:</p>
+            
+            <div class="step">
+                Acceda a la página de inicio de sesión del sistema.
+            </div>
+            
+            <div class="step">
+                Ingrese su correo electrónico en el campo "Email".
+            </div>
+            
+            <div class="step">
+                Ingrese su contraseña en el campo "Contraseña".
+            </div>
+            
+            <div class="step">
+                Haga clic en el botón "Iniciar Sesión".
+            </div>
+            
+            <div class="warning">
+                <strong>Importante:</strong> Si ingresa datos incorrectos tres veces consecutivas, el sistema bloqueará temporalmente su cuenta por seguridad.
+            </div>
+            
+            <div class="screenshot">
+                <p>[Imagen: Pantalla de inicio de sesión]</p>
+            </div>
+        </div>
+        
+        <h3>1.3 Recuperación de Contraseña</h3>
+        <div class="feature-card">
+            <p>Si ha olvidado su contraseña, puede restablecerla siguiendo estos pasos:</p>
+            
+            <div class="step">
+                En la pantalla de inicio de sesión, haga clic en el enlace "¿Olvidó su contraseña?".
+            </div>
+            
+            <div class="step">
+                Ingrese el correo electrónico asociado a su cuenta.
+            </div>
+            
+            <div class="step">
+                Haga clic en "Enviar enlace de recuperación".
+            </div>
+            
+            <div class="step">
+                Revise su correo electrónico y haga clic en el enlace de recuperación.
+            </div>
+            
+            <div class="step">
+                Ingrese y confirme su nueva contraseña.
+            </div>
+            
+            <div class="step">
+                Haga clic en "Guardar nueva contraseña".
+            </div>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> El enlace de recuperación tiene una validez de 24 horas. Si no lo utiliza dentro de este período, deberá solicitar uno nuevo.
+            </div>
+        </div>
+    </section>
+
+    <section id="dashboard">
+        <h2>2. Panel Principal (Dashboard)</h2>
+        <div class="feature-card">
+            <p>El Panel Principal es la primera pantalla que verá después de iniciar sesión. Proporciona una visión general del estado de su negocio:</p>
+            
+            <h3>2.1 Navegación por el Dashboard</h3>
+            
+            <div class="step">
+                Observe los indicadores clave en la parte superior:
+                <ul>
+                    <li><strong>Ventas del día:</strong> Total de ventas realizadas hoy</li>
+                    <li><strong>Estado de caja:</strong> Saldo actual en caja</li>
+                    <li><strong>Productos en stock:</strong> Cantidad total de productos disponibles</li>
+                    <li><strong>Ganancia estimada:</strong> Ganancia calculada basada en el inventario actual</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Explore los gráficos de desempeño:
+                <ul>
+                    <li><strong>Gráfico de ventas:</strong> Muestra las ventas de los últimos 7 días</li>
+                    <li><strong>Productos más vendidos:</strong> Lista de los productos con mayor rotación</li>
+                    <li><strong>Distribución por categorías:</strong> Gráfico circular que muestra las ventas por categoría</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Utilice el menú lateral para navegar a otras secciones del sistema.
+            </div>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> Puede personalizar los widgets del dashboard según sus necesidades desde la sección de configuración.
+            </div>
+            
+            <div class="screenshot">
+                <p>[Imagen: Vista general del Dashboard con indicadores y gráficos]</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="productos">
+        <h2>3. Gestión de Productos</h2>
+        <div class="feature-card">
+            <p>La sección de Gestión de Productos le permite administrar su inventario de manera eficiente:</p>
+            
+            <h3>3.1 Agregar Nuevo Producto</h3>
+            
+            <div class="step">
+                Acceda a la sección "Productos" desde el menú lateral.
+            </div>
+            
+            <div class="step">
+                Haga clic en el botón "+ Nuevo Producto" en la parte superior derecha.
+            </div>
+            
+            <div class="step">
+                Complete el formulario con la información del producto:
+                <ul>
+                    <li><strong>Código:</strong> Identificador único del producto (puede ser manual o generado automáticamente)</li>
+                    <li><strong>Nombre:</strong> Nombre descriptivo del producto</li>
+                    <li><strong>Categoría:</strong> Clasificación del producto</li>
+                    <li><strong>Precio de compra:</strong> Costo de adquisición</li>
+                    <li><strong>Precio de venta:</strong> Precio al que se venderá el producto</li>
+                    <li><strong>Stock inicial:</strong> Cantidad disponible inicialmente</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Observe que el sistema calcula automáticamente el porcentaje de ganancia basado en los precios ingresados.
+            </div>
+            
+            <div class="step">
+                Haga clic en "Guardar" para agregar el producto al inventario.
+            </div>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> Utilice códigos consistentes para facilitar la búsqueda de productos durante las ventas.
+            </div>
+            
+            <div class="screenshot">
+                <p>[Imagen: Formulario de nuevo producto]</p>
+            </div>
+        </div>
+        
+        <h3>3.2 Productos por Peso</h3>
+        <div class="feature-card">
+            <p>Para productos que se venden por peso (como frutas, verduras, etc.):</p>
+            
+            <div class="step">
+                En la pantalla de Productos, haga clic en el botón "+ Nuevo Producto por Peso".
+            </div>
+            
+            <div class="step">
+                Complete el formulario específico para productos por peso:
+                <ul>
+                    <li><strong>Código:</strong> Identificador único del producto</li>
+                    <li><strong>Nombre:</strong> Nombre descriptivo del producto</li>
+                    <li><strong>Categoría:</strong> Clasificación del producto</li>
+                    <li><strong>Precio de compra por gramo:</strong> Costo por gramo</li>
+                    <li><strong>Precio de venta por gramo:</strong> Precio de venta por gramo</li>
+                    <li><strong>Stock en gramos:</strong> Cantidad disponible en gramos</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Haga clic en "Guardar" para agregar el producto al inventario.
+            </div>
+            
+            <div class="warning">
+                <strong>Importante:</strong> Los productos por peso se manejan de forma diferente durante la venta, ya que requerirán especificar la cantidad en gramos.
+            </div>
+        </div>
+        
+        <h3>3.3 Editar Producto</h3>
+        <div class="feature-card">
+            <p>Para modificar la información de un producto existente:</p>
+            
+            <div class="step">
+                En la lista de productos, localice el producto que desea editar.
+            </div>
+            
+            <div class="step">
+                Haga clic en el botón "Editar" en la fila correspondiente.
+            </div>
+            
+            <div class="step">
+                Modifique los campos necesarios en el formulario que aparece.
+            </div>
+            
+            <div class="step">
+                Haga clic en "Guardar" para aplicar los cambios.
+            </div>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> Si necesita actualizar solo el stock, puede utilizar la función de ajuste de inventario en lugar de editar todo el producto.
+            </div>
+        </div>
+        
+        <h3>3.4 Eliminar Producto</h3>
+        <div class="feature-card">
+            <p>Para eliminar un producto del inventario:</p>
+            
+            <div class="step">
+                En la lista de productos, localice el producto que desea eliminar.
+            </div>
+            
+            <div class="step">
+                Haga clic en el botón "Eliminar" en la fila correspondiente.
+            </div>
+            
+            <div class="step">
+                Confirme la acción en el cuadro de diálogo que aparece.
+            </div>
+            
+            <div class="warning">
+                <strong>¡Precaución!</strong> La eliminación de productos es permanente y no se puede deshacer. Si el producto tiene historial de ventas, considere marcarlo como inactivo en lugar de eliminarlo.
+            </div>
+        </div>
+    </section>
+</body>
+</html>

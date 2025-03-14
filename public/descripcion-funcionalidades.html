@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descripción de Funcionalidades del Sistema</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+            margin-top: 1.5em;
+        }
+        h1 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 5px;
+        }
+        .feature-card {
+            background-color: #f9f9f9;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 5px 5px 0;
+        }
+        .tip {
+            background-color: #e8f4f8;
+            border-left: 4px solid #2ecc71;
+            padding: 10px 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        .warning {
+            background-color: #fff5e6;
+            border-left: 4px solid #e67e22;
+            padding: 10px 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        code {
+            background-color: #f0f0f0;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Descripción Detallada de Funcionalidades del Sistema</h1>
+
+    <section id="arquitectura-sistema">
+        <h2>Arquitectura del Sistema</h2>
+        <div class="feature-card">
+            <p>El sistema está construido utilizando las siguientes tecnologías:</p>
+            <ul>
+                <li><strong>Next.js:</strong> Framework de React para el desarrollo de aplicaciones web.</li>
+                <li><strong>Supabase:</strong> Plataforma de backend como servicio que proporciona autenticación, base de datos PostgreSQL y almacenamiento.</li>
+                <li><strong>Tailwind CSS:</strong> Framework CSS para el diseño de interfaces de usuario.</li>
+            </ul>
+            <p>La aplicación sigue una arquitectura cliente-servidor donde:</p>
+            <ul>
+                <li>El frontend está desarrollado con Next.js y se ejecuta en el navegador del cliente.</li>
+                <li>El backend utiliza Supabase para la autenticación, almacenamiento de datos y lógica de negocio.</li>
+                <li>Se implementa un sistema de middleware para controlar el acceso basado en el estado de suscripción del usuario.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="control-acceso">
+        <h2>Sistema de Control de Acceso</h2>
+        <div class="feature-card">
+            <p>La aplicación implementa un sistema de control de acceso basado en autenticación y estado de suscripción:</p>
+            <h3>Middleware de Autenticación y Suscripción</h3>
+            <p>El middleware (middleware.ts) controla el acceso a las diferentes rutas de la aplicación:</p>
+            <ul>
+                <li><strong>Rutas Públicas:</strong> Accesibles sin autenticación (/login, /register, /reset-password, /subscription).</li>
+                <li><strong>Rutas Protegidas:</strong> Requieren autenticación y verificación de suscripción (/dashboard, /productos, /ventas, /reportes, /caja).</li>
+            </ul>
+            <h3>Estados de Suscripción</h3>
+            <p>El sistema maneja tres estados de suscripción:</p>
+            <ul>
+                <li><strong>Trial:</strong> Período de prueba gratuito con acceso a todas las funcionalidades.</li>
+                <li><strong>Active:</strong> Suscripción activa y pagada con acceso completo.</li>
+                <li><strong>Inactive:</strong> Suscripción inactiva o vencida con acceso limitado.</li>
+            </ul>
+            <p>Cuando un usuario intenta acceder a una ruta protegida, el middleware verifica:</p>
+            <ol>
+                <li>Si el usuario está autenticado (redirección a /login si no lo está).</li>
+                <li>El estado de la suscripción del usuario (redirección a /subscription si no está activa).</li>
+            </ol>
+        </div>
+    </section>
+
+    <section id="registro-login">
+        <h2>Registro y Autenticación</h2>
+        <div class="feature-card">
+            <h3>Página de Registro</h3>
+            <p>La página de registro permite a los nuevos usuarios crear una cuenta en el sistema:</p>
+            <ul>
+                <li>Formulario de registro con validación de datos.</li>
+                <li>Creación automática de un período de prueba (trial) para nuevos usuarios.</li>
+                <li>Redirección al dashboard tras el registro exitoso.</li>
+            </ul>
+            
+            <h3>Página de Login</h3>
+            <p>La página de login permite a los usuarios existentes acceder al sistema:</p>
+            <ul>
+                <li>Autenticación mediante email y contraseña.</li>
+                <li>Opción para recuperar contraseña olvidada.</li>
+                <li>Redirección al dashboard tras el login exitoso.</li>
+            </ul>
+            
+            <h3>Recuperación de Contraseña</h3>
+            <p>El sistema ofrece un mecanismo para recuperar contraseñas olvidadas:</p>
+            <ul>
+                <li>Solicitud de recuperación mediante email.</li>
+                <li>Envío de enlace de restablecimiento de contraseña.</li>
+                <li>Formulario para establecer nueva contraseña.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="dashboard">
+        <h2>Panel Principal (Dashboard)</h2>
+        <div class="feature-card">
+            <p>El dashboard proporciona una visión general del negocio con estadísticas y gráficos clave:</p>
+            <h3>Resumen de Ventas</h3>
+            <ul>
+                <li>Total de ventas del día, semana y mes.</li>
+                <li>Comparativa con períodos anteriores.</li>
+                <li>Indicadores de tendencia (aumento o disminución).</li>
+            </ul>
+            
+            <h3>Estado de Caja</h3>
+            <ul>
+                <li>Saldo actual de caja.</li>
+                <li>Ingresos y egresos del día.</li>
+                <li>Estado de apertura/cierre de caja.</li>
+            </ul>
+            
+            <h3>Estadísticas y Gráficos</h3>
+            <ul>
+                <li>Gráfico de ventas por categoría de producto.</li>
+                <li>Gráfico de evolución de ventas en el tiempo.</li>
+                <li>Productos más vendidos.</li>
+                <li>Porcentaje de ganancia promedio.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="gestion-productos">
+        <h2>Gestión de Productos</h2>
+        <div class="feature-card">
+            <p>El módulo de gestión de productos permite administrar el inventario de la tienda:</p>
+            
+            <h3>Listado de Productos</h3>
+            <ul>
+                <li>Tabla con todos los productos del inventario.</li>
+                <li>Información de código, nombre, categoría, precios y stock.</li>
+                <li>Distinción entre productos regulares y productos por peso.</li>
+                <li>Opciones para editar y eliminar productos.</li>
+            </ul>
+            
+            <h3>Agregar Nuevo Producto</h3>
+            <ul>
+                <li>Formulario para agregar productos regulares (vendidos por unidad).</li>
+                <li>Campos para código, nombre, categoría, precio de compra, precio de venta y stock.</li>
+                <li>Cálculo automático del porcentaje de ganancia.</li>
+            </ul>
+            
+            <h3>Productos por Peso</h3>
+            <ul>
+                <li>Formulario especializado para productos vendidos por peso.</li>
+                <li>Precios definidos por gramo.</li>
+                <li>Gestión de stock en gramos.</li>
+            </ul>
+            
+            <h3>Edición y Eliminación</h3>
+            <ul>
+                <li>Edición de información de productos existentes.</li>
+                <li>Confirmación antes de eliminar productos.</li>
+                <li>Validación para evitar errores en los datos.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="registro-ventas">
+        <h2>Registro de Ventas</h2>
+        <div class="feature-card">
+            <p>El módulo de ventas permite registrar transacciones y gestionar el historial de ventas:</p>
+            
+            <h3>Realizar Nueva Venta</h3>
+            <ul>
+                <li>Búsqueda de productos por código.</li>
+                <li>Adición de múltiples productos a la venta.</li>
+                <li>Ajuste de cantidades para cada producto.</li>
+                <li>Cálculo automático del total.</li>
+                <li>Selección de método de pago (efectivo, tarjeta, transferencia).</li>
+                <li>Registro de monto recibido y cálculo de cambio para pagos en efectivo.</li>
+            </ul>
+            
+            <h3>Vender Productos por Peso</h3>
+            <ul>
+                <li>Interfaz especializada para vender productos por peso.</li>
+                <li>Ingreso de gramos para calcular el precio.</li>
+                <li>Búsqueda rápida de productos por peso.</li>
+            </ul>
+            
+            <h3>Métodos de Pago</h3>
+            <ul>
+                <li>Soporte para múltiples métodos de pago:</li>
+                <li>Efectivo: con cálculo de cambio.</li>
+                <li>Tarjeta: débito o crédito.</li>
+                <li>Transferencia: pagos electrónicos.</li>
+            </ul>
+            
+            <h3>Historial de Ventas</h3>
+            <ul>
+                <li>Registro detallado de todas las ventas realizadas.</li>
+                <li>Filtrado por fecha, método de pago o monto.</li>
+                <li>Visualización de detalles de cada venta.</li>
+                <li>Opción para reimprimir tickets.</li>
+            </ul>
+            
+            <h3>Generación de Tickets</h3>
+            <ul>
+                <li>Creación automática de tickets de venta.</li>
+                <li>Inclusión de datos del comercio.</li>
+                <li>Detalle de productos, cantidades y precios.</li>
+                <li>Información de método de pago y cambio.</li>
+                <li>Opción para imprimir o guardar como PDF.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="reportes">
+        <h2>Reportes y Estadísticas</h2>
+        <div class="feature-card">
+            <p>El módulo de reportes ofrece información detallada sobre el desempeño del negocio:</p>
+            
+            <h3>Tipos de Reportes Disponibles</h3>
+            <ul>
+                <li><strong>Reporte de Ventas:</strong> Detalle de ventas por período, método de pago o categoría.</li>
+                <li><strong>Reporte de Inventario:</strong> Estado actual del inventario, productos con bajo stock.</li>
+                <li><strong>Reporte de Ganancias:</strong> Análisis de rentabilidad por producto o categoría.</li>
+                <li><strong>Reporte de Caja:</strong> Movimientos de caja, aperturas y cierres.</li>
+            </ul>
+            
+            <h3>Generación de Reportes</h3>
+            <ul>
+                <li>Selección de tipo de reporte.</li>
+                <li>Configuración de parámetros (rango de fechas, categorías, etc.).</li>
+                <li>Visualización en pantalla con gráficos y tablas.</li>
+            </ul>
+            
+            <h3>Análisis de Tendencias</h3>
+            <ul>
+                <li>Gráficos de evolución temporal.</li>
+                <li>Comparativas entre períodos.</li>
+                <li>Identificación de productos más y menos vendidos.</li>
+                <li>Análisis de rentabilidad por categoría.</li>
+            </ul>
+            
+            <h3>Exportación e Impresión</h3>
+            <ul>
+                <li>Exportación de reportes a Excel o PDF.</li>
+                <li>Opciones de impresión personalizada.</li>
+                <li>Envío por email.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="control-caja">
+        <h2>Control de Caja</h2>
+        <div class="feature-card">
+            <p>El módulo de control de caja permite gestionar los movimientos de dinero:</p>
+            
+            <h3>Apertura de Caja</h3>
+            <ul>
+                <li>Registro de monto inicial al comenzar operaciones.</li>
+                <li>Fecha y hora de apertura.</li>
+                <li>Identificación del usuario que realiza la apertura.</li>
+            </ul>
+            
+            <h3>Registrar Movimientos de Caja</h3>
+            <ul>
+                <li>Ingreso de dinero (ventas, depósitos, etc.).</li>
+                <li>Egreso de dinero (compras, pagos, retiros, etc.).</li>
+                <li>Registro de motivo y descripción del movimiento.</li>
+                <li>Actualización automática del saldo de caja.</li>
+            </ul>
+            
+            <h3>Cierre de Caja</h3>
+            <ul>
+                <li>Conteo físico de dinero al finalizar operaciones.</li>
+                <li>Comparación con saldo calculado por el sistema.</li>
+                <li>Registro de diferencias (faltantes o sobrantes).</li>
+                <li>Fecha y hora de cierre.</li>
+                <li>Identificación del usuario que realiza el cierre.</li>
+            </ul>
+            
+            <h3>Reportes de Caja</h3>
+            <ul>
+                <li>Reporte detallado de movimientos del día.</li>
+                <li>Historial de aperturas y cierres.</li>
+                <li>Análisis de diferencias en cierres anteriores.</li>
+                <li>Exportación e impresión de reportes.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="gestion-suscripciones">
+        <h2>Gestión de Suscripciones</h2>
+        <div class="feature-card">
+            <p>El sistema opera bajo un modelo de suscripción que controla el acceso a las funcionalidades:</p>
+            
+            <h3>Estados de Suscripción</h3>
+            <ul>
+                <li><strong>Trial:</strong> Período de prueba gratuito con acceso completo por tiempo limitado.</li>
+                <li><strong>Active:</strong> Suscripción pagada con acceso a todas las funcionalidades.</li>
+                <li><strong>Inactive:</strong> Suscripción vencida o cancelada con acceso limitado.</li>
+            </ul>
+            
+            <h3>Período de Prueba</h3>
+            <ul>
+                <li>Asignación automática al registrarse.</li>
+                <li>Duración configurable (típicamente 14 o 30 días).</li>
+                <li>Acceso completo a todas las funcionalidades.</li>
+                <li>Notificaciones de vencimiento próximo.</li>
+            </ul>
+            
+            <h3>Activar Suscripción</h3>
+            <ul>
+                <li>Selección de plan de suscripción.</li>
+                <li>Ingreso de datos de facturación.</li>
+                <li>Procesamiento de pago.</li>
+                <li>Activación inmediata tras confirmación del pago.</li>
+            </ul>
+            
+            <h3>Gestionar Suscripción Activa</h3>
+            <ul>
+                <li>Visualización de estado y fecha de vencimiento.</li>
+                <li>Cambio de plan.</li>
+                <li>Actualización de método de pago.</li>
+                <li>Renovación automática o manual.</li>
+            </ul>
+            
+            <h3>Reactivar Suscripción Inactiva</h3>
+            <ul>
+                <li>Proceso para reactivar una suscripción vencida.</li>
+                <li>Pago de factura pendiente.</li>
+                <li>Recuperación de acceso a todas las funcionalidades.</li>
+            </ul>
+            
+            <h3>Acceso con Suscripción Inactiva</h3>
+            <ul>
+                <li>Acceso limitado a funcionalidades básicas.</li>
+                <li>Visualización de datos existentes sin posibilidad de crear nuevos.</li>
+                <li>Notificaciones y recordatorios para reactivar.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="configuracion">
+        <h2>Configuración del Sistema</h2>
+        <div class="feature-card">
+            <p>El módulo de configuración permite personalizar diversos aspectos del sistema:</p>
+            
+            <h3>Perfil de Usuario</h3>
+            <ul>
+                <li>Actualización de datos personales.</li>
+                <li>Cambio de contraseña.</li>
+                <li>Preferencias de notificaciones.</li>
+            </ul>
+            
+            <h3>Información del Negocio</h3>
+            <ul>
+                <li>Nombre y logo del comercio.</li>
+                <li>Dirección y datos de contacto.</li>
+                <li>Información fiscal (RFC, régimen fiscal).</li>
+                <li>Estos datos aparecen en tickets y reportes.</li>
+            </ul>
+            
+            <h3>Configuración de Impresión</h3>
+            <ul>
+                <li>Formato de tickets.</li>
+                <li>Información adicional en tickets (mensajes, políticas).</li>
+                <li>Configuración de impresora predeterminada.</li>
+            </ul>
+            
+            <h3>Impuestos y Moneda</h3>
+            <ul>
+                <li>Configuración de tasas de impuestos.</li>
+                <li>Formato de moneda.</li>
+                <li>Opciones de redondeo.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="soporte-tecnico">
+        <h2>Soporte Técnico</h2>
+        <div class="feature-card">
+            <p>El sistema ofrece diversas opciones de soporte para los usuarios:</p>
+            
+            <h3>Centro de Ayuda</h3>
+            <ul>
+                <li>Manual de usuario completo.</li>
+                <li>Preguntas frecuentes (FAQ).</li>
+                <li>Tutoriales en video.</li>
+            </ul>
+            
+            <h3>Contacto con Soporte</h3>
+            <ul>
+                <li>Formulario de contacto dentro de la aplicación.</li>
+                <li>Correo electrónico de soporte.</li>
+                <li>Chat en vivo (en horario de atención).</li>
+            </ul>
+            
+            <h3>Actualizaciones y Mantenimiento</h3>
+            <ul>
+                <li>Notificaciones de nuevas versiones.</li>
+                <li>Notas de las actualizaciones.</li>
+                <li>Mantenimiento preventivo del sistema.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="seguridad">
+        <h2>Seguridad del Sistema</h2>
+        <div class="feature-card">
+            <p>El sistema implementa diversas medidas de seguridad para proteger los datos:</p>
+            
+            <h3>Autenticación Segura</h3>
+            <ul>
+                <li>Autenticación basada en tokens JWT.</li>
+                <li>Contraseñas encriptadas.</li>
+                <li>Protección contra ataques de fuerza bruta.</li>
+            </ul>
+            
+            <h3>Control de Acceso</h3>
+            <ul>
+                <li>Middleware para verificación de autenticación.</li>
+                <li>Verificación de permisos basada en suscripción.</li>
+                <li>Protección de rutas sensibles.</li>
+            </ul>
+            
+            <h3>Protección de Datos</h3>
+            <ul>
+                <li>Conexiones seguras mediante HTTPS.</li>
+                <li>Encriptación de datos sensibles.</li>
+                <li>Políticas de retención de datos.</li>
+            </ul>
+            
+            <h3>Auditoría y Monitoreo</h3>
+            <ul>
+                <li>Registro de actividades críticas.</li>
+                <li>Detección de actividades sospechosas.</li>
+                <li>Monitoreo de intentos de acceso fallidos.</li>
+            </ul>
+        </div>
+    </section>
+</body>
+</html>

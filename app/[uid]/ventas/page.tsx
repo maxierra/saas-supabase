@@ -50,6 +50,9 @@ export default function VentasPage() {
   const [isGramosModalOpen, setIsGramosModalOpen] = useState(false);
   const [selectedWeightProduct, setSelectedWeightProduct] = useState<any>(null);
 
+  // Estado para los medios de pago
+  const [mediosPago, setMediosPago] = useState<any[]>([]);
+
   const handleWeightProductSelect = (weightProduct: any) => {
     // Guardar el producto seleccionado y abrir el modal de gramos
     setSelectedWeightProduct(weightProduct);
@@ -499,6 +502,27 @@ export default function VentasPage() {
     }
   };
 
+  // Función para cargar medios de pago
+  const loadMediosPago = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('medios_pago')
+        .select('*')
+        .eq('uid', uid); // Asegúrate de filtrar por el UID del usuario
+
+      if (error) throw error;
+
+      setMediosPago(data || []);
+    } catch (err) {
+      console.error('Error al cargar medios de pago:', err);
+    }
+  };
+
+  // Cargar medios de pago al montar el componente
+  useEffect(() => {
+    loadMediosPago();
+  }, [uid]);
+
   return (
     <div className="p-3 sm:p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6">
@@ -692,10 +716,11 @@ export default function VentasPage() {
                 }}
                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
               >
-                <option value="efectivo">Efectivo</option>
-                <option value="tarjeta_credito">Tarjeta de Crédito</option>
-                <option value="tarjeta_debito">Tarjeta de Débito</option>
-                <option value="mercado_pago">Mercado Pago</option>
+                {mediosPago.map((medio) => (
+                  <option key={medio.id} value={medio.tipo}>
+                    {medio.tipo} {medio.detalles && `(${medio.detalles})`}
+                  </option>
+                ))}
               </select>
             </div>
 

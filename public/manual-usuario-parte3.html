@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Usuario - Sistema de Gestión (Parte 3)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+            margin-top: 1.5em;
+        }
+        h1 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 5px;
+        }
+        .feature-card {
+            background-color: #f9f9f9;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 5px 5px 0;
+        }
+        .tip {
+            background-color: #e8f4f8;
+            border-left: 4px solid #2ecc71;
+            padding: 10px 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        .warning {
+            background-color: #fff5e6;
+            border-left: 4px solid #e67e22;
+            padding: 10px 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        .step {
+            background-color: #f0f7ff;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            counter-increment: step-counter;
+        }
+        .step::before {
+            content: "Paso " counter(step-counter) ": ";
+            font-weight: bold;
+            color: #3498db;
+        }
+        code {
+            background-color: #f0f0f0;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .screenshot {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border: 1px dashed #ccc;
+            text-align: center;
+            margin: 15px 0;
+        }
+        .screenshot p {
+            font-style: italic;
+            margin-top: 5px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Manual de Usuario - Sistema de Gestión (Parte 3)</h1>
+
+    <section id="suscripciones">
+        <h2>7. Gestión de Suscripciones</h2>
+        <div class="feature-card">
+            <p>El sistema funciona bajo un modelo de suscripción que determina su acceso a las funcionalidades:</p>
+            
+            <h3>7.1 Estados de Suscripción</h3>
+            <p>Su cuenta puede estar en uno de estos tres estados:</p>
+            
+            <table>
+                <tr>
+                    <th>Estado</th>
+                    <th>Descripción</th>
+                    <th>Acceso</th>
+                </tr>
+                <tr>
+                    <td><strong>Trial</strong></td>
+                    <td>Período de prueba gratuito</td>
+                    <td>Acceso completo a todas las funcionalidades por tiempo limitado (generalmente 14 o 30 días)</td>
+                </tr>
+                <tr>
+                    <td><strong>Active</strong></td>
+                    <td>Suscripción activa y pagada</td>
+                    <td>Acceso completo a todas las funcionalidades</td>
+                </tr>
+                <tr>
+                    <td><strong>Inactive</strong></td>
+                    <td>Suscripción vencida o cancelada</td>
+                    <td>Acceso limitado (solo visualización de datos existentes)</td>
+                </tr>
+            </table>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> Puede verificar el estado actual de su suscripción en cualquier momento desde la sección "Mi Suscripción" en el menú de usuario.
+            </div>
+        </div>
+        
+        <h3>7.2 Período de Prueba</h3>
+        <div class="feature-card">
+            <p>Al registrarse en el sistema, automáticamente se le asigna un período de prueba gratuito:</p>
+            
+            <div class="step">
+                Complete el proceso de registro con sus datos personales y de negocio.
+            </div>
+            
+            <div class="step">
+                Verifique su correo electrónico para activar su cuenta.
+            </div>
+            
+            <div class="step">
+                Una vez activada, su cuenta entrará automáticamente en estado "Trial".
+            </div>
+            
+            <div class="step">
+                Durante este período, tendrá acceso completo a todas las funcionalidades del sistema.
+            </div>
+            
+            <div class="step">
+                Recibirá notificaciones cuando su período de prueba esté por finalizar.
+            </div>
+            
+            <div class="warning">
+                <strong>Importante:</strong> El período de prueba tiene una duración limitada. Asegúrese de activar su suscripción antes de que finalice para evitar interrupciones en el servicio.
+            </div>
+            
+            <div class="screenshot">
+                <p>[Imagen: Pantalla de información del período de prueba con fechas de inicio y finalización]</p>
+            </div>
+        </div>
+        
+        <h3>7.3 Activar Suscripción</h3>
+        <div class="feature-card">
+            <p>Para activar su suscripción y continuar utilizando el sistema después del período de prueba:</p>
+            
+            <div class="step">
+                Acceda a la sección "Mi Suscripción" desde el menú de usuario.
+            </div>
+            
+            <div class="step">
+                Haga clic en el botón "Activar Suscripción".
+            </div>
+            
+            <div class="step">
+                Seleccione el plan que mejor se adapte a sus necesidades:
+                <ul>
+                    <li><strong>Plan Mensual:</strong> Facturación mes a mes</li>
+                    <li><strong>Plan Anual:</strong> Facturación anual con descuento</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Complete el formulario con sus datos de facturación:
+                <ul>
+                    <li>Nombre/Razón social</li>
+                    <li>Dirección</li>
+                    <li>Información fiscal (RFC)</li>
+                    <li>Datos de contacto</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Seleccione su método de pago preferido y complete la información requerida.
+            </div>
+            
+            <div class="step">
+                Revise el resumen de su pedido y haga clic en "Confirmar y Pagar".
+            </div>
+            
+            <div class="step">
+                Una vez procesado el pago, su cuenta pasará automáticamente al estado "Active".
+            </div>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> El plan anual ofrece un descuento significativo comparado con el pago mensual. Considere esta opción si planea utilizar el sistema a largo plazo.
+            </div>
+            
+            <div class="screenshot">
+                <p>[Imagen: Pantalla de selección de plan de suscripción]</p>
+            </div>
+        </div>
+        
+        <h3>7.4 Gestionar Suscripción Activa</h3>
+        <div class="feature-card">
+            <p>Una vez que tenga una suscripción activa, puede gestionar diversos aspectos:</p>
+            
+            <div class="step">
+                Acceda a la sección "Mi Suscripción" desde el menú de usuario.
+            </div>
+            
+            <div class="step">
+                Revise la información de su suscripción actual:
+                <ul>
+                    <li>Plan contratado</li>
+                    <li>Fecha de próxima renovación</li>
+                    <li>Historial de pagos</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Para cambiar su plan, haga clic en "Cambiar Plan" y seleccione la nueva opción deseada.
+            </div>
+            
+            <div class="step">
+                Para actualizar su método de pago, haga clic en "Actualizar Método de Pago" y siga las instrucciones.
+            </div>
+            
+            <div class="step">
+                Para modificar sus datos de facturación, haga clic en "Editar Datos de Facturación".
+            </div>
+            
+            <div class="warning">
+                <strong>Importante:</strong> Si cambia de un plan mensual a uno anual, se aplicará el cargo correspondiente al nuevo plan de inmediato, pero con un descuento proporcional por el tiempo restante del mes actual.
+            </div>
+        </div>
+        
+        <h3>7.5 Reactivar Suscripción Inactiva</h3>
+        <div class="feature-card">
+            <p>Si su suscripción ha vencido o ha sido cancelada, puede reactivarla:</p>
+            
+            <div class="step">
+                Al intentar acceder a funcionalidades protegidas, el sistema le redirigirá automáticamente a la página de suscripción.
+            </div>
+            
+            <div class="step">
+                También puede acceder directamente a la sección "Mi Suscripción" desde el menú de usuario.
+            </div>
+            
+            <div class="step">
+                Haga clic en el botón "Reactivar Suscripción".
+            </div>
+            
+            <div class="step">
+                Seleccione el plan deseado (mensual o anual).
+            </div>
+            
+            <div class="step">
+                Complete el proceso de pago como se describió anteriormente.
+            </div>
+            
+            <div class="step">
+                Una vez completado el pago, su cuenta volverá al estado "Active" y recuperará acceso completo a todas las funcionalidades.
+            </div>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> Sus datos previos (productos, ventas, reportes, etc.) se conservan incluso cuando su suscripción está inactiva, por lo que no perderá información al reactivarla.
+            </div>
+        </div>
+        
+        <h3>7.6 Acceso con Suscripción Inactiva</h3>
+        <div class="feature-card">
+            <p>Cuando su suscripción está en estado "Inactive", tiene acceso limitado al sistema:</p>
+            
+            <div class="step">
+                Podrá iniciar sesión en el sistema normalmente.
+            </div>
+            
+            <div class="step">
+                Al intentar acceder a secciones protegidas (dashboard, productos, ventas, reportes, caja), será redirigido automáticamente a la página de suscripción.
+            </div>
+            
+            <div class="step">
+                Desde la página de suscripción, podrá ver el estado actual de su cuenta y las opciones para reactivarla.
+            </div>
+            
+            <div class="step">
+                Tendrá acceso a la sección "Mi Cuenta" donde podrá actualizar su información personal.
+            </div>
+            
+            <div class="warning">
+                <strong>Importante:</strong> Con una suscripción inactiva, no podrá registrar nuevas ventas, agregar productos, generar reportes ni realizar operaciones de caja. Es necesario reactivar su suscripción para recuperar estas funcionalidades.
+            </div>
+        </div>
+    </section>
+
+    <section id="configuracion">
+        <h2>8. Configuración del Sistema</h2>
+        <div class="feature-card">
+            <p>La sección de Configuración le permite personalizar diversos aspectos del sistema:</p>
+            
+            <h3>8.1 Perfil de Usuario</h3>
+            
+            <div class="step">
+                Acceda a la sección "Mi Cuenta" desde el menú de usuario (icono de perfil en la esquina superior derecha).
+            </div>
+            
+            <div class="step">
+                En la pestaña "Perfil", puede actualizar su información personal:
+                <ul>
+                    <li>Nombre completo</li>
+                    <li>Correo electrónico</li>
+                    <li>Contraseña</li>
+                    <li>Foto de perfil</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Para cambiar su contraseña, haga clic en "Cambiar Contraseña" y siga las instrucciones.
+            </div>
+            
+            <div class="step">
+                Para actualizar su correo electrónico, deberá verificar el nuevo correo antes de que el cambio sea efectivo.
+            </div>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> Actualice regularmente su contraseña para mantener la seguridad de su cuenta.
+            </div>
+            
+            <div class="screenshot">
+                <p>[Imagen: Pantalla de configuración de perfil de usuario]</p>
+            </div>
+        </div>
+        
+        <h3>8.2 Información del Negocio</h3>
+        <div class="feature-card">
+            <p>Para configurar la información de su negocio que aparecerá en tickets y reportes:</p>
+            
+            <div class="step">
+                Acceda a la sección "Configuración" desde el menú lateral.
+            </div>
+            
+            <div class="step">
+                Seleccione la pestaña "Información del Negocio".
+            </div>
+            
+            <div class="step">
+                Complete o actualice los siguientes campos:
+                <ul>
+                    <li><strong>Nombre del Negocio:</strong> Nombre comercial que aparecerá en tickets y reportes</li>
+                    <li><strong>Logo:</strong> Imagen que se mostrará en tickets y reportes (formatos JPG, PNG)</li>
+                    <li><strong>Dirección:</strong> Ubicación física del negocio</li>
+                    <li><strong>Teléfono:</strong> Número de contacto</li>
+                    <li><strong>Correo Electrónico:</strong> Email de contacto del negocio</li>
+                    <li><strong>Sitio Web:</strong> URL de su página web (opcional)</li>
+                    <li><strong>RFC:</strong> Registro Federal de Contribuyentes</li>
+                    <li><strong>Régimen Fiscal:</strong> Régimen bajo el cual opera su negocio</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Haga clic en "Guardar Cambios" para aplicar las modificaciones.
+            </div>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> Para obtener tickets con mejor apariencia, utilice un logo con fondo transparente y en formato PNG.
+            </div>
+            
+            <div class="screenshot">
+                <p>[Imagen: Formulario de configuración de información del negocio]</p>
+            </div>
+        </div>
+        
+        <h3>8.3 Configuración de Impresión</h3>
+        <div class="feature-card">
+            <p>Para personalizar el formato de los tickets y documentos impresos:</p>
+            
+            <div class="step">
+                En la sección "Configuración", seleccione la pestaña "Impresión".
+            </div>
+            
+            <div class="step">
+                Configure las opciones de tickets de venta:
+                <ul>
+                    <li><strong>Tamaño de papel:</strong> Seleccione el formato utilizado por su impresora</li>
+                    <li><strong>Incluir logo:</strong> Active/desactive la impresión del logo en tickets</li>
+                    <li><strong>Mensaje de agradecimiento:</strong> Texto personalizado al final del ticket</li>
+                    <li><strong>Políticas de devolución:</strong> Información sobre políticas de cambios o devoluciones</li>
+                    <li><strong>Número de copias:</strong> Cantidad de copias a imprimir por defecto</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Configure las opciones de reportes:
+                <ul>
+                    <li><strong>Orientación:</strong> Vertical u horizontal</li>
+                    <li><strong>Incluir encabezado en cada página:</strong> Active/desactive esta opción</li>
+                    <li><strong>Incluir fecha y hora:</strong> Active/desactive esta opción</li>
+                    <li><strong>Incluir número de página:</strong> Active/desactive esta opción</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Haga clic en "Vista Previa" para ver cómo quedarán sus documentos con la configuración actual.
+            </div>
+            
+            <div class="step">
+                Haga clic en "Guardar Cambios" para aplicar la configuración.
+            </div>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> Si utiliza una impresora térmica, asegúrese de seleccionar el tamaño de papel correcto (generalmente 58mm o 80mm).
+            </div>
+        </div>
+        
+        <h3>8.4 Impuestos y Moneda</h3>
+        <div class="feature-card">
+            <p>Para configurar aspectos relacionados con impuestos y formato de moneda:</p>
+            
+            <div class="step">
+                En la sección "Configuración", seleccione la pestaña "Impuestos y Moneda".
+            </div>
+            
+            <div class="step">
+                Configure las opciones de impuestos:
+                <ul>
+                    <li><strong>IVA (%):</strong> Porcentaje de impuesto al valor agregado</li>
+                    <li><strong>Aplicar IVA:</strong> Seleccione si los precios incluyen IVA o se agrega por separado</li>
+                    <li><strong>Otros impuestos:</strong> Configure impuestos adicionales si es necesario</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Configure las opciones de moneda:
+                <ul>
+                    <li><strong>Moneda principal:</strong> Seleccione su moneda local (MXN, USD, etc.)</li>
+                    <li><strong>Símbolo:</strong> Símbolo de la moneda ($, €, etc.)</li>
+                    <li><strong>Posición del símbolo:</strong> Antes o después del monto</li>
+                    <li><strong>Separador decimal:</strong> Punto o coma</li>
+                    <li><strong>Separador de miles:</strong> Coma, punto o espacio</li>
+                    <li><strong>Decimales a mostrar:</strong> Número de decimales (0, 1, 2)</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Configure las opciones de redondeo:
+                <ul>
+                    <li><strong>Método de redondeo:</strong> Al alza, a la baja o matemático</li>
+                    <li><strong>Redondear a:</strong> Centavos, decenas, etc.</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Haga clic en "Guardar Cambios" para aplicar la configuración.
+            </div>
+            
+            <div class="warning">
+                <strong>Importante:</strong> Asegúrese de configurar correctamente los impuestos según las regulaciones fiscales de su país o región.
+            </div>
+            
+            <div class="screenshot">
+                <p>[Imagen: Pantalla de configuración de impuestos y moneda]</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="soporte">
+        <h2>9. Soporte Técnico</h2>
+        <div class="feature-card">
+            <p>El sistema ofrece diversas opciones de soporte para ayudarle a resolver cualquier duda o problema:</p>
+            
+            <h3>9.1 Centro de Ayuda</h3>
+            
+            <div class="step">
+                Acceda al "Centro de Ayuda" haciendo clic en el ícono de interrogación (?) en la esquina superior derecha de cualquier pantalla.
+            </div>
+            
+            <div class="step">
+                Explore las secciones disponibles:
+                <ul>
+                    <li><strong>Manual de Usuario:</strong> Documentación completa del sistema</li>
+                    <li><strong>Preguntas Frecuentes:</strong> Respuestas a dudas comunes</li>
+                    <li><strong>Tutoriales en Video:</strong> Guías visuales paso a paso</li>
+                    <li><strong>Novedades:</strong> Información sobre actualizaciones recientes</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Utilice la barra de búsqueda para encontrar información específica.
+            </div>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> El Centro de Ayuda se actualiza regularmente con nueva información y tutoriales. Revíselo periódicamente para descubrir nuevas funcionalidades.
+            </div>
+        </div>
+        
+        <h3>9.2 Contacto con Soporte</h3>
+        <div class="feature-card">
+            <p>Si necesita asistencia personalizada:</p>
+            
+            <div class="step">
+                En el Centro de Ayuda, haga clic en "Contactar Soporte".
+            </div>
+            
+            <div class="step">
+                Seleccione el tipo de consulta:
+                <ul>
+                    <li>Consulta técnica</li>
+                    <li>Reporte de error</li>
+                    <li>Sugerencia de mejora</li>
+                    <li>Consulta sobre facturación</li>
+                    <li>Otros</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Complete el formulario con los detalles de su consulta:
+                <ul>
+                    <li>Asunto</li>
+                    <li>Descripción detallada</li>
+                    <li>Capturas de pantalla (si aplica)</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Haga clic en "Enviar" para crear un ticket de soporte.
+            </div>
+            
+            <div class="step">
+                Recibirá una confirmación por correo electrónico con el número de ticket asignado.
+            </div>
+            
+            <div class="step">
+                El equipo de soporte responderá a su consulta en un plazo máximo de 24 horas hábiles.
+            </div>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> Proporcione la mayor cantidad de detalles posible en su consulta para facilitar una respuesta rápida y precisa.
+            </div>
+        </div>
+        
+        <h3>9.3 Actualizaciones y Mantenimiento</h3>
+        <div class="feature-card">
+            <p>El sistema se actualiza regularmente para mejorar su funcionamiento y agregar nuevas características:</p>
+            
+            <div class="step">
+                Las actualizaciones menores se aplican automáticamente sin interrupción del servicio.
+            </div>
+            
+            <div class="step">
+                Para actualizaciones mayores, recibirá una notificación con anticipación informando:
+                <ul>
+                    <li>Fecha y hora programada para la actualización</li>
+                    <li>Duración estimada del mantenimiento</li>
+                    <li>Nuevas funcionalidades o mejoras incluidas</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                Después de cada actualización importante, encontrará información detallada en la sección "Novedades" del Centro de Ayuda.
+            </div>
+            
+            <div class="warning">
+                <strong>Importante:</strong> Durante las ventanas de mantenimiento programado, el sistema podría no estar disponible temporalmente. Planifique sus operaciones teniendo esto en cuenta.
+            </div>
+        </div>
+    </section>
+</body>
+</html>
