@@ -18,6 +18,7 @@ interface ProductoEnVenta {
   es_peso?: boolean;
   gramos?: number;
   precio_por_gramo?: number;
+  ultima_actualizacion?: number;
 }
 
 export default function VentasPage() {
@@ -33,7 +34,9 @@ export default function VentasPage() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isQuickSearchOpen, setIsQuickSearchOpen] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const [lastSearchTime, setLastSearchTime] = useState(0);
   
   // Estados para el ticket
   const [isTicketModalOpen, setIsTicketModalOpen] = useState(false);
@@ -123,99 +126,131 @@ export default function VentasPage() {
   }, []);
 
   // Buscar producto por código
-  const searchProduct = async () => {
-    if (!searchCode.trim()) return;
+  const searchProduct = async (searchCode: string) => {
+    // Prevenir múltiples búsquedas en un corto período de tiempo
+    const now = Date.now();
+    console.log('Intento de búsqueda - Tiempo desde última búsqueda:', now - lastSearchTime, 'ms');
+    if (now - lastSearchTime < 500) { // 500ms de debounce
+      console.log('Búsqueda ignorada por debounce');
+      return;
+    }
+    setLastSearchTime(now);
+
+    if (!searchCode.trim() || isSearching) {
+      console.log('Búsqueda ignorada:', !searchCode.trim() ? 'código vacío' : 'búsqueda en progreso');
+      return;
+    }
 
     try {
-      // Primero buscar en productos regulares por código de producto
+      setIsSearching(true);
+      setError(null);
+
+      console.log('Iniciando búsqueda de producto con código:', searchCode.trim());
+
+      // Primero buscar en productos regulares
+      const searchTerm = searchCode.trim();
       let { data: regularProduct, error: regularError } = await supabase
         .from('productos')
         .select('*')
         .eq('uid', uid)
-        .eq('codigo_producto', searchCode.trim())
+        .or(`codigo_producto.eq.${searchTerm},codigo_barras.eq.${searchTerm}`)
         .maybeSingle();
 
-      // Si no se encuentra por código de producto, buscar por código de barras
+      console.log('Resultado búsqueda en productos:', regularProduct);
+
       if (!regularProduct) {
-        const { data: barcodeProduct, error: barcodeError } = await supabase
-          .from('productos')
-          .select('*')
-          .eq('uid', uid)
-          .eq('codigo_barras', searchCode.trim())
-          .maybeSingle();
+        // Si no se encuentra en productos regulares, buscar en productos_peso
+        console.log('Buscando en productos_peso');
         
-        if (!barcodeError) {
-          regularProduct = barcodeProduct;
-        }
-      }
-
-      if (regularError) throw regularError;
-
-      // Si no se encuentra en productos regulares, buscar en productos_peso
-      if (!regularProduct) {
-        // Primero buscar por código de producto
-        let { data: weightProduct, error: weightError } = await supabase
+        const { data: weightProduct, error: weightError } = await supabase
           .from('productos_peso')
           .select('*')
           .eq('uid', uid)
-          .eq('codigo_producto', searchCode.trim())
+          .or(`codigo_producto.eq.${searchTerm},codigo_barras.eq.${searchTerm}`)
           .maybeSingle();
-        
-        // Si no se encuentra por código de producto, buscar por código de barras
-        if (!weightProduct) {
-          const { data: barcodeWeightProduct, error: barcodeWeightError } = await supabase
-            .from('productos_peso')
-            .select('*')
-            .eq('uid', uid)
-            .eq('codigo_barras', searchCode.trim())
-            .maybeSingle();
-          
-          if (!barcodeWeightError) {
-            weightProduct = barcodeWeightProduct;
-          }
-        }
+
+        console.log('Resultado búsqueda en productos_peso:', weightProduct);
 
         if (weightError && weightError.code !== 'PGRST116') {
           throw weightError;
         }
 
         if (weightProduct) {
-          // Mostrar modal para ingresar gramos
-          setSelectedWeightProduct(weightProduct);
-          setIsGramosModalOpen(true);
-          setSearchCode('');
-          return;
+          // Convertir producto_peso a formato regular
+          regularProduct = {
+            ...weightProduct,
+            precio_venta: weightProduct.precio_venta_gramo,
+            stock: weightProduct.stock_gramos,
+            es_peso: true
+          };
         }
-
-        setError('Producto no encontrado');
-        // Mantener el foco en el campo de búsqueda para facilitar el escaneo continuo
-        searchInputRef.current?.focus();
-        return;
       }
 
-      // Procesar producto regular
-      const existingProduct = productos.find(p => p.codigo_producto === regularProduct.codigo_producto);
-      if (existingProduct) {
-        updateQuantity(existingProduct.codigo_producto, existingProduct.cantidad + 1);
-      } else {
+      if (regularProduct) {
+        // Producto encontrado
+        const cantidad = 1;
+        const subtotal = cantidad * regularProduct.precio_venta;
+
         const newProduct: ProductoEnVenta = {
           id: regularProduct.id,
           codigo_producto: regularProduct.codigo_producto,
           nombre: regularProduct.nombre,
           precio_venta: regularProduct.precio_venta,
-          cantidad: 1,
-          subtotal: regularProduct.precio_venta
+          cantidad,
+          subtotal,
+          es_peso: regularProduct.es_peso,
+          gramos: regularProduct.es_peso ? 0 : undefined,
+          precio_por_gramo: regularProduct.es_peso ? regularProduct.precio_venta : undefined
         };
-        setProductos([...productos, newProduct]);
-      }
 
-      setSearchCode('');
-      setError(null);
-      // Mantener el foco en el campo de búsqueda para facilitar el escaneo continuo
-      searchInputRef.current?.focus();
+        setProductos(prev => {
+          // Verificar si el producto ya está en la lista
+          const existingIndex = prev.findIndex(p => p.id === newProduct.id);
+          console.log('Producto existente:', existingIndex >= 0 ? 'Sí' : 'No', 'Índice:', existingIndex);
+          
+          // Si es un producto nuevo, simplemente agregarlo
+          if (existingIndex < 0) {
+            console.log('Agregando nuevo producto a la lista');
+            return [...prev, newProduct];
+          }
+          
+          // Si el producto existe y no es por peso
+          if (!newProduct.es_peso) {
+            // Verificar si ya fue actualizado recientemente
+            const producto = prev[existingIndex];
+            const tiempoDesdeUltimaActualizacion = now - (producto.ultima_actualizacion || 0);
+            console.log('Tiempo desde última actualización:', tiempoDesdeUltimaActualizacion, 'ms');
+            
+            if (tiempoDesdeUltimaActualizacion < 1000) {
+              console.log('Ignorando actualización duplicada');
+              return prev;
+            }
+            
+            console.log('Actualizando cantidad de producto existente');
+            console.log('Cantidad anterior:', prev[existingIndex].cantidad);
+            const updated = [...prev];
+            updated[existingIndex] = {
+              ...updated[existingIndex],
+              cantidad: updated[existingIndex].cantidad + 1,
+              subtotal: (updated[existingIndex].cantidad + 1) * updated[existingIndex].precio_venta,
+              ultima_actualizacion: now
+            };
+            console.log('Nueva cantidad:', updated[existingIndex].cantidad);
+            return updated;
+          }
+          
+          return prev;
+        });
+
+        setSearchCode('');
+      } else {
+        setError('Producto no encontrado');
+      }
     } catch (err) {
       console.error('Error al buscar producto:', err);
       setError('Error al buscar el producto');
+    } finally {
+      setIsSearching(false);
       // Mantener el foco en el campo de búsqueda para facilitar el escaneo continuo
       searchInputRef.current?.focus();
     }
@@ -487,7 +522,14 @@ export default function VentasPage() {
                   ref={searchInputRef}
                   value={searchCode}
                   onChange={(e) => setSearchCode(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && searchProduct()}
+                  onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                    console.log('Evento KeyDown:', e.key, 'Tiempo:', new Date().toISOString());
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      console.log('Ejecutando búsqueda desde KeyDown');
+                      searchProduct(searchCode);
+                    }
+                  }}
                   placeholder="Escanee código de barras o ingrese código de producto"
                   className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                 />
@@ -505,10 +547,14 @@ export default function VentasPage() {
                 </div>
               </div>
               <button
-                onClick={searchProduct}
+                onClick={() => {
+                  console.log('Ejecutando búsqueda desde botón:', new Date().toISOString());
+                  searchProduct(searchCode);
+                }}
+                disabled={isSearching}
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
               >
-                Buscar
+                {isSearching ? 'Buscando...' : 'Buscar'}
               </button>
               <button
                 onClick={() => setIsQuickSearchOpen(!isQuickSearchOpen)}
@@ -522,6 +568,7 @@ export default function VentasPage() {
               Para usar el lector de código de barras USB, simplemente enfoque el lector al código mientras este campo está seleccionado.
             </p>
             {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+            {isSearching && <p className="mt-2 text-sm text-gray-600">Buscando...</p>}
 
             {isQuickSearchOpen && (
               <div className="mt-4 p-5 border rounded-lg bg-gradient-to-r from-green-50 to-green-100 shadow-md">

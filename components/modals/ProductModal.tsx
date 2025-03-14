@@ -281,13 +281,13 @@ const ProductModal = ({
         const { error: updateError } = await supabase
           .from('productos')
           .update({
-            codigo_producto: formData.codigo_producto,
+            codigo_producto: formData.codigo_producto.trim(),
             nombre: formData.nombre,
             categoria: formData.categoria || null,
             precio_compra,
             precio_venta,
             stock,
-            codigo_barras: formData.codigo_barras,
+            codigo_barras: formData.codigo_barras.trim(),
             fecha_vencimiento: formData.fecha_vencimiento
           })
           .eq('id', product.id)
@@ -300,13 +300,13 @@ const ProductModal = ({
           .from('productos')
           .insert({
             uid,
-            codigo_producto: formData.codigo_producto,
+            codigo_producto: formData.codigo_producto.trim(),
             nombre: formData.nombre,
             categoria: formData.categoria || null,
             precio_compra,
             precio_venta,
             stock,
-            codigo_barras: formData.codigo_barras,
+            codigo_barras: formData.codigo_barras.trim(),
             fecha_vencimiento: formData.fecha_vencimiento
           });
           
@@ -382,278 +382,267 @@ const ProductModal = ({
     }
   }, []);
 
+  // Manejar el escáner de código de barras
+  const handleScannerToggle = (type: 'usb' | 'camera') => {
+    if (type === 'usb') {
+      if (barcodeInputRef.current) {
+        barcodeInputRef.current.focus();
+      }
+    } else {
+      if (isScanning) {
+        stopBarcodeScanner();
+      } else {
+        startBarcodeScanner();
+      }
+    }
+  };
+
   // Detener el escáner cuando se cierra el modal
   useEffect(() => {
-    if (!isVisible && isScanning) {
-      stopBarcodeScanner();
-    }
-    
-    // Cleanup al desmontar el componente
     return () => {
-      if (scannerRef.current && scannerRef.current.isScanning) {
-        scannerRef.current.stop().catch(console.error);
+      if (scannerRef.current) {
+        scannerRef.current.stop();
       }
     };
-  }, [isVisible, isScanning, stopBarcodeScanner]);
+  }, []);
 
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-      <div className="flex items-center justify-center min-h-screen p-4 text-center">
-        {/* Overlay semi-transparente */}
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 transition-opacity backdrop-blur-sm" aria-hidden="true"></div>
+    <div className={`fixed inset-0 z-50 flex items-center justify-center ${!isVisible ? 'hidden' : ''}`}>
+      <div className="fixed inset-0 bg-black opacity-50"></div>
+      
+      <div className="relative bg-white rounded-lg shadow-xl w-full max-w-3xl mx-4 p-8">
+        <h2 className="text-2xl font-bold mb-6 text-gray-900">
+          {isEditing ? 'Editar Producto' : 'Agregar Nuevo Producto'}
+        </h2>
 
-        {/* Modal */}
-        <div className="inline-block align-middle bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg w-full">
-          <div className="bg-white px-4 pt-5 pb-4 sm:p-6">
-            <div className="sm:flex sm:items-start">
-              <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
-                <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4" id="modal-title">
-                  {isEditing ? 'Editar Producto' : 'Agregar Nuevo Producto'}
-                </h3>
-                
-                <form onSubmit={handleSubmit}>
-                  {/* Código de producto */}
-                  <div className="mb-4">
-                    <div className="flex justify-between items-center mb-1">
-                      <label htmlFor="codigo_producto" className="block text-sm font-medium text-gray-700">
-                        Código de producto *
-                      </label>
-                      {!isEditing && (
-                        <button
-                          type="button"
-                          onClick={generateProductCode}
-                          disabled={isGeneratingCode}
-                          className="text-xs text-indigo-600 hover:text-indigo-800"
-                        >
-                          {isGeneratingCode ? 'Generando...' : 'Regenerar código'}
-                        </button>
-                      )}
-                    </div>
-                    <input
-                      type="text"
-                      name="codigo_producto"
-                      id="codigo_producto"
-                      value={formData.codigo_producto}
-                      onChange={handleChange}
-                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${errors.codigo_producto ? 'border-red-500' : ''}`}
-                      placeholder="Ej: P0001"
-                      readOnly={!isEditing}
-                    />
-                    {errors.codigo_producto && <p className="mt-1 text-sm text-red-600">{errors.codigo_producto}</p>}
-                    <p className="mt-1 text-xs text-gray-500">
-                      {isEditing 
-                        ? "Puedes editar el código si es necesario."
-                        : "Este código se genera automáticamente y será utilizado para identificar el producto."}
-                    </p>
-                  </div>
-                  
-                  {/* Nombre del producto */}
-                  <div className="mb-4">
-                    <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-1">
-                      Nombre del producto *
-                    </label>
-                    <input
-                      type="text"
-                      name="nombre"
-                      id="nombre"
-                      value={formData.nombre}
-                      onChange={handleChange}
-                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${errors.nombre ? 'border-red-500' : ''}`}
-                      placeholder="Ej: Laptop HP Pavilion"
-                    />
-                    {errors.nombre && <p className="mt-1 text-sm text-red-600">{errors.nombre}</p>}
-                  </div>
-                  
-                  {/* Categoría */}
-                  <div className="mb-4">
-                    <label htmlFor="categoria" className="block text-sm font-medium text-gray-700 mb-1">
-                      Categoría *
-                    </label>
-                    <select
-                      name="categoria"
-                      id="categoria"
-                      value={formData.categoria}
-                      onChange={handleChange}
-                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${errors.categoria ? 'border-red-500' : ''}`}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Sección de códigos */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Código de producto *
+                </label>
+                <div className="flex items-center">
+                  <input
+                    type="text"
+                    name="codigo_producto"
+                    value={formData.codigo_producto}
+                    onChange={handleChange}
+                    className="flex-1 p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                    readOnly={!isEditing}
+                  />
+                  {!isEditing && (
+                    <button
+                      type="button"
+                      onClick={generateProductCode}
+                      disabled={isGeneratingCode}
+                      className="ml-2 px-4 py-2 text-sm bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 transition-colors"
                     >
-                      <option value="">Seleccionar categoría</option>
-                      {loadingCategorias ? (
-                        <option disabled>Cargando categorías...</option>
-                      ) : (
-                        categorias.map((cat) => (
-                          <option key={cat.id} value={cat.nombre}>
-                            {cat.nombre}
-                          </option>
-                        ))
-                      )}
-                    </select>
-                    {errors.categoria && <p className="mt-1 text-sm text-red-600">{errors.categoria}</p>}
-                  </div>
-                  
-                  {/* Precios */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <label htmlFor="precio_compra" className="block text-sm font-medium text-gray-700 mb-1">
-                        Precio de compra *
-                      </label>
-                      <div className="mt-1 relative rounded-md shadow-sm">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <span className="text-gray-500 sm:text-sm">$</span>
-                        </div>
-                        <input
-                          type="text"
-                          name="precio_compra"
-                          id="precio_compra"
-                          value={formData.precio_compra}
-                          onChange={handleChange}
-                          className={`focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 sm:text-sm border-gray-300 rounded-md ${errors.precio_compra ? 'border-red-500' : ''}`}
-                          placeholder="0.00"
-                        />
-                      </div>
-                      {errors.precio_compra && <p className="mt-1 text-sm text-red-600">{errors.precio_compra}</p>}
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="precio_venta" className="block text-sm font-medium text-gray-700 mb-1">
-                        Precio de venta *
-                      </label>
-                      <div className="mt-1 relative rounded-md shadow-sm">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <span className="text-gray-500 sm:text-sm">$</span>
-                        </div>
-                        <input
-                          type="text"
-                          name="precio_venta"
-                          id="precio_venta"
-                          value={formData.precio_venta}
-                          onChange={handleChange}
-                          className={`focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 sm:text-sm border-gray-300 rounded-md ${errors.precio_venta ? 'border-red-500' : ''}`}
-                          placeholder="0.00"
-                        />
-                      </div>
-                      {errors.precio_venta && <p className="mt-1 text-sm text-red-600">{errors.precio_venta}</p>}
-                    </div>
-                  </div>
-                  
-                  {/* Stock */}
-                  <div className="mb-4">
-                    <label htmlFor="stock" className="block text-sm font-medium text-gray-700 mb-1">
-                      Stock *
-                    </label>
+                      Regenerar código
+                    </button>
+                  )}
+                </div>
+                {!isEditing && (
+                  <p className="mt-1 text-sm text-gray-500">
+                    Este código se genera automáticamente y será utilizado para identificar el producto.
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Código de barras *
+                </label>
+                <div className="space-y-2">
+                  <div className="flex items-center">
                     <input
-                      type="text"
-                      name="stock"
-                      id="stock"
-                      value={formData.stock}
-                      onChange={handleChange}
-                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${errors.stock ? 'border-red-500' : ''}`}
-                      placeholder="Ej: 10"
-                    />
-                    {errors.stock && <p className="mt-1 text-sm text-red-600">{errors.stock}</p>}
-                  </div>
-                  
-                  {/* Código de barras */}
-                  <div className="mb-4">
-                    <div className="flex justify-between items-center mb-1">
-                      <label htmlFor="codigo_barras" className="block text-sm font-medium text-gray-700">
-                        Código de barras *
-                      </label>
-                      <div className="flex space-x-2">
-                        <button
-                          type="button"
-                          onClick={() => barcodeInputRef.current?.focus()}
-                          className="text-xs text-indigo-600 hover:text-indigo-800"
-                        >
-                          Usar lector USB
-                        </button>
-                        <span className="text-xs text-gray-500">|</span>
-                        <button
-                          type="button"
-                          onClick={isScanning ? stopBarcodeScanner : startBarcodeScanner}
-                          className="text-xs text-indigo-600 hover:text-indigo-800"
-                        >
-                          {isScanning ? 'Detener cámara' : 'Usar cámara'}
-                        </button>
-                      </div>
-                    </div>
-                    <input
+                      ref={barcodeInputRef}
                       type="text"
                       name="codigo_barras"
-                      id="codigo_barras"
-                      ref={barcodeInputRef}
                       value={formData.codigo_barras}
                       onChange={handleChange}
-                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${errors.codigo_barras ? 'border-red-500' : ''}`}
+                      className="flex-1 p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                       placeholder="Escanee el código o ingrese manualmente"
                     />
-                    {errors.codigo_barras && <p className="mt-1 text-sm text-red-600">{errors.codigo_barras}</p>}
-                    <p className="mt-1 text-xs text-gray-500">
-                      Para usar el lector USB, simplemente enfoque el lector al código de barras mientras este campo está seleccionado.
-                    </p>
-                    
-                    {/* Contenedor para el escáner de códigos de barras */}
-                    {isScanning && (
-                      <div className="mt-2 relative">
-                        <div id="barcode-reader" ref={scannerContainerRef} className="w-full h-64 border rounded-md overflow-hidden"></div>
-                        <p className="mt-1 text-xs text-gray-500">Apunte la cámara al código de barras para escanearlo.</p>
-                      </div>
-                    )}
+                    <div className="ml-2 space-x-2">
+                      <button
+                        type="button"
+                        onClick={() => handleScannerToggle('usb')}
+                        className="px-3 py-2 text-sm bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors"
+                      >
+                        Usar lector USB
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleScannerToggle('camera')}
+                        className="px-3 py-2 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
+                      >
+                        Usar cámara
+                      </button>
+                    </div>
                   </div>
-                  
-                  {/* Fecha de vencimiento */}
-                  <div className="mb-4">
-                    <label htmlFor="fecha_vencimiento" className="block text-sm font-medium text-gray-700 mb-1">
-                      Fecha de vencimiento *
-                    </label>
-                    <input
-                      type="date"
-                      name="fecha_vencimiento"
-                      id="fecha_vencimiento"
-                      value={formData.fecha_vencimiento}
-                      onChange={handleChange}
-                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${errors.fecha_vencimiento ? 'border-red-500' : ''}`}
-                    />
-                    {errors.fecha_vencimiento && <p className="mt-1 text-sm text-red-600">{errors.fecha_vencimiento}</p>}
-                  </div>
-                  
-                  {/* Error general */}
-                  {errors.submit && (
-                    <div className="rounded-md bg-red-50 p-4 mb-4">
-                      <div className="flex">
-                        <div className="ml-3">
-                          <h3 className="text-sm font-medium text-red-800">Error</h3>
-                          <div className="mt-2 text-sm text-red-700">
-                            <p>{errors.submit}</p>
-                          </div>
+                  {formData.codigo_barras && (
+                    <div className="mt-2 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                      <div className="text-center">
+                        <div className="inline-block">
+                          <svg
+                            className="h-12"
+                            viewBox="0 0 100 30"
+                            style={{
+                              fill: 'black',
+                              fillRule: 'nonzero',
+                              stroke: 'none',
+                              strokeWidth: 1
+                            }}
+                          >
+                            {/* Simulación visual de código de barras */}
+                            {Array.from({ length: 30 }).map((_, i) => (
+                              <rect
+                                key={i}
+                                x={i * 3}
+                                y="0"
+                                width="2"
+                                height="30"
+                                style={{ opacity: Math.random() > 0.5 ? 1 : 0 }}
+                              />
+                            ))}
+                          </svg>
+                          <div className="text-xs text-gray-600 mt-1">{formData.codigo_barras}</div>
                         </div>
                       </div>
                     </div>
                   )}
-                  
-                  {/* Botones */}
-                  <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
-                    >
-                      {isSubmitting ? 'Guardando...' : isEditing ? 'Actualizar' : 'Guardar'}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={onClose}
-                      className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
-                    >
-                      Cancelar
-                    </button>
-                  </div>
-                </form>
+                  {isScanning && (
+                    <div ref={scannerContainerRef} className="mt-2 bg-gray-50 rounded-lg overflow-hidden" style={{ height: '200px' }} />
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nombre del producto *
+                </label>
+                <input
+                  type="text"
+                  name="nombre"
+                  value={formData.nombre}
+                  onChange={handleChange}
+                  placeholder="Ej: Laptop HP Pavilion"
+                  className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Categoría *
+                </label>
+                <select
+                  name="categoria"
+                  value={formData.categoria}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                >
+                  <option value="">Seleccionar categoría</option>
+                  {categorias.map(cat => (
+                    <option key={cat.id} value={cat.nombre}>
+                      {cat.nombre}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
           </div>
-        </div>
+
+          {/* Sección de precios y stock */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Precio de compra *
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                <input
+                  type="number"
+                  name="precio_compra"
+                  value={formData.precio_compra}
+                  onChange={handleChange}
+                  step="0.01"
+                  min="0"
+                  className="w-full pl-8 p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Precio de venta *
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                <input
+                  type="number"
+                  name="precio_venta"
+                  value={formData.precio_venta}
+                  onChange={handleChange}
+                  step="0.01"
+                  min="0"
+                  className="w-full pl-8 p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Stock *
+              </label>
+              <input
+                type="number"
+                name="stock"
+                value={formData.stock}
+                onChange={handleChange}
+                min="0"
+                className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+          </div>
+
+          {/* Fecha de vencimiento */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Fecha de vencimiento
+            </label>
+            <input
+              type="date"
+              name="fecha_vencimiento"
+              value={formData.fecha_vencimiento}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
+          {/* Botones de acción */}
+          <div className="flex justify-end space-x-3 pt-6">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-6 py-3 bg-white text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors disabled:opacity-50"
+            >
+              {isSubmitting ? 'Guardando...' : isEditing ? 'Actualizar' : 'Guardar'}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

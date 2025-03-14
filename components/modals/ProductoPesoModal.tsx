@@ -285,158 +285,165 @@ const ProductoPesoModal = ({
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg w-full max-w-md p-6">
-        <h2 className="text-xl font-semibold mb-4">
+    <div className={`fixed inset-0 z-50 flex items-center justify-center ${!isVisible ? 'hidden' : ''}`}>
+      <div className="fixed inset-0 bg-black opacity-50"></div>
+      
+      <div className="relative bg-white rounded-lg shadow-xl w-full max-w-3xl mx-4 p-8">
+        <h2 className="text-2xl font-bold mb-6 text-gray-900">
           {isEditing ? 'Editar Producto por Peso' : 'Nuevo Producto por Peso'}
         </h2>
-        
-        <form onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Código de Producto</label>
-              <div className="mt-1 flex">
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Sección superior: Código y Nombre */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Código de producto *
+                </label>
+                <div className="flex items-center">
+                  <input
+                    type="text"
+                    name="codigo_producto"
+                    value={formData.codigo_producto}
+                    onChange={handleChange}
+                    className="flex-1 p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                    readOnly={!isEditing}
+                  />
+                  {!isEditing && (
+                    <button
+                      type="button"
+                      onClick={generateProductCode}
+                      disabled={isGeneratingCode}
+                      className="ml-2 px-4 py-2 text-sm bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 transition-colors"
+                    >
+                      Regenerar código
+                    </button>
+                  )}
+                </div>
+                {!isEditing && (
+                  <p className="mt-1 text-sm text-gray-500">
+                    Este código se genera automáticamente y será utilizado para identificar el producto.
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nombre del producto *
+                </label>
                 <input
                   type="text"
-                  name="codigo_producto"
-                  value={formData.codigo_producto}
+                  name="nombre"
+                  value={formData.nombre}
                   onChange={handleChange}
-                  className={`flex-1 block w-full rounded-md sm:text-sm border-gray-300 ${errors.codigo_producto ? 'border-red-500' : ''}`}
-                  disabled={isGeneratingCode}
+                  placeholder="Ej: Manzanas Red Delicious"
+                  className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                 />
               </div>
-              {errors.codigo_producto && (
-                <p className="mt-1 text-sm text-red-500">{errors.codigo_producto}</p>
-              )}
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Nombre</label>
-              <input
-                type="text"
-                name="nombre"
-                value={formData.nombre}
-                onChange={handleChange}
-                className={`mt-1 block w-full rounded-md sm:text-sm border-gray-300 ${errors.nombre ? 'border-red-500' : ''}`}
-              />
-              {errors.nombre && (
-                <p className="mt-1 text-sm text-red-500">{errors.nombre}</p>
-              )}
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Categoría</label>
-              <select
-                name="categoria"
-                value={formData.categoria}
-                onChange={handleChange}
-                className={`mt-1 block w-full rounded-md sm:text-sm border-gray-300 ${errors.categoria ? 'border-red-500' : ''}`}
-              >
-                <option value="">Seleccionar categoría</option>
-                {loadingCategorias ? (
-                  <option disabled>Cargando categorías...</option>
-                ) : (
-                  categorias.map((cat) => (
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Categoría *
+                </label>
+                <select
+                  name="categoria"
+                  value={formData.categoria}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                >
+                  <option value="">Seleccionar categoría</option>
+                  {categorias.map(cat => (
                     <option key={cat.id} value={cat.nombre}>
                       {cat.nombre}
                     </option>
-                  ))
-                )}
-              </select>
-              {errors.categoria && (
-                <p className="mt-1 text-sm text-red-500">{errors.categoria}</p>
-              )}
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Precio de Compra por Kilo</label>
-              <input
-                type="number"
-                step="0.01"
-                name="precio_compra_kilo"
-                value={formData.precio_compra_kilo}
-                onChange={handleChange}
-                className={`mt-1 block w-full rounded-md sm:text-sm border-gray-300 ${errors.precio_compra_kilo ? 'border-red-500' : ''}`}
-              />
-              {errors.precio_compra_kilo && (
-                <p className="mt-1 text-sm text-red-500">{errors.precio_compra_kilo}</p>
-              )}
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Precio de Venta por Kilo</label>
-              <input
-                type="number"
-                step="0.01"
-                name="precio_venta_kilo"
-                value={formData.precio_venta_kilo}
-                onChange={handleChange}
-                className={`mt-1 block w-full rounded-md sm:text-sm border-gray-300 ${errors.precio_venta_kilo ? 'border-red-500' : ''}`}
-              />
-              {errors.precio_venta_kilo && (
-                <p className="mt-1 text-sm text-red-500">{errors.precio_venta_kilo}</p>
-              )}
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Precio de Compra por Gramo (Calculado)</label>
-              <input
-                type="number"
-                step="0.01"
-                name="precio_compra_gramo"
-                value={formData.precio_compra_gramo}
-                readOnly
-                className="mt-1 block w-full rounded-md sm:text-sm border-gray-300 bg-gray-100"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Precio de Venta por Gramo (Calculado)</label>
-              <input
-                type="number"
-                step="0.01"
-                name="precio_venta_gramo"
-                value={formData.precio_venta_gramo}
-                readOnly
-                className="mt-1 block w-full rounded-md sm:text-sm border-gray-300 bg-gray-100"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Stock en Gramos</label>
-              <input
-                type="number"
-                step="0.01"
-                name="stock_gramos"
-                value={formData.stock_gramos}
-                onChange={handleChange}
-                className={`mt-1 block w-full rounded-md sm:text-sm border-gray-300 ${errors.stock_gramos ? 'border-red-500' : ''}`}
-              />
-              {errors.stock_gramos && (
-                <p className="mt-1 text-sm text-red-500">{errors.stock_gramos}</p>
-              )}
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
-          
-          {errors.submit && (
-            <p className="mt-4 text-sm text-red-500">{errors.submit}</p>
-          )}
-          
-          <div className="mt-6 flex justify-end space-x-3">
+
+          {/* Sección de precios por kilo */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Precio de Compra por Kilo *
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                <input
+                  type="number"
+                  name="precio_compra_kilo"
+                  value={formData.precio_compra_kilo}
+                  onChange={handleChange}
+                  step="0.01"
+                  min="0"
+                  className="w-full pl-8 p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                />
+              </div>
+              <p className="mt-1 text-xs text-gray-500">
+                Precio por gramo: ${formData.precio_compra_gramo || '0.00'}
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Precio de Venta por Kilo *
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                <input
+                  type="number"
+                  name="precio_venta_kilo"
+                  value={formData.precio_venta_kilo}
+                  onChange={handleChange}
+                  step="0.01"
+                  min="0"
+                  className="w-full pl-8 p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                />
+              </div>
+              <p className="mt-1 text-xs text-gray-500">
+                Precio por gramo: ${formData.precio_venta_gramo || '0.00'}
+              </p>
+            </div>
+          </div>
+
+          {/* Stock en gramos */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Stock en Gramos *
+            </label>
+            <input
+              type="number"
+              name="stock_gramos"
+              value={formData.stock_gramos}
+              onChange={handleChange}
+              min="0"
+              className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="Ej: 5000 para 5 kilos"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              {formData.stock_gramos ? `${(parseFloat(formData.stock_gramos) / 1000).toFixed(2)} kilos` : '0 kilos'}
+            </p>
+          </div>
+
+          {/* Botones de acción */}
+          <div className="flex justify-end space-x-3 pt-6">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-              disabled={isSubmitting}
+              className="px-6 py-3 bg-white text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               disabled={isSubmitting}
+              className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors disabled:opacity-50"
             >
-              {isSubmitting ? 'Guardando...' : isEditing ? 'Guardar Cambios' : 'Crear Producto'}
+              {isSubmitting ? 'Guardando...' : isEditing ? 'Actualizar' : 'Guardar'}
             </button>
           </div>
         </form>
