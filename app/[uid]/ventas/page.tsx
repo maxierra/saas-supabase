@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import SalesHistoryModal from '@/components/modals/SalesHistoryModal';
 import QuickSearchProductoPeso from '@/components/modals/QuickSearchProductoPeso';
@@ -33,6 +33,7 @@ export default function VentasPage() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isQuickSearchOpen, setIsQuickSearchOpen] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   
   // Estados para el ticket
   const [isTicketModalOpen, setIsTicketModalOpen] = useState(false);
@@ -109,35 +110,72 @@ export default function VentasPage() {
     loadDatosComercio();
   }, [uid]);
 
+  // Efecto para enfocar automáticamente el campo de búsqueda al cargar la página
+  useEffect(() => {
+    // Pequeño retraso para asegurar que el DOM esté listo
+    const timer = setTimeout(() => {
+      if (searchInputRef.current) {
+        searchInputRef.current.focus();
+      }
+    }, 300);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
   // Buscar producto por código
   const searchProduct = async () => {
     if (!searchCode.trim()) return;
 
     try {
-      // Primero buscar en productos regulares
-      const { data: regularProduct, error: regularError } = await supabase
+      // Primero buscar en productos regulares por código de producto
+      let { data: regularProduct, error: regularError } = await supabase
         .from('productos')
         .select('*')
         .eq('uid', uid)
         .eq('codigo_producto', searchCode.trim())
         .maybeSingle();
 
+      // Si no se encuentra por código de producto, buscar por código de barras
+      if (!regularProduct) {
+        const { data: barcodeProduct, error: barcodeError } = await supabase
+          .from('productos')
+          .select('*')
+          .eq('uid', uid)
+          .eq('codigo_barras', searchCode.trim())
+          .maybeSingle();
+        
+        if (!barcodeError) {
+          regularProduct = barcodeProduct;
+        }
+      }
+
       if (regularError) throw regularError;
 
       // Si no se encuentra en productos regulares, buscar en productos_peso
       if (!regularProduct) {
-        const { data: weightProduct, error: weightError } = await supabase
+        // Primero buscar por código de producto
+        let { data: weightProduct, error: weightError } = await supabase
           .from('productos_peso')
           .select('*')
           .eq('uid', uid)
           .eq('codigo_producto', searchCode.trim())
-          .single();
-
-        if (weightError) {
-          if (weightError.code === 'PGRST116') {
-            setError('Producto no encontrado');
-            return;
+          .maybeSingle();
+        
+        // Si no se encuentra por código de producto, buscar por código de barras
+        if (!weightProduct) {
+          const { data: barcodeWeightProduct, error: barcodeWeightError } = await supabase
+            .from('productos_peso')
+            .select('*')
+            .eq('uid', uid)
+            .eq('codigo_barras', searchCode.trim())
+            .maybeSingle();
+          
+          if (!barcodeWeightError) {
+            weightProduct = barcodeWeightProduct;
           }
+        }
+
+        if (weightError && weightError.code !== 'PGRST116') {
           throw weightError;
         }
 
@@ -145,10 +183,13 @@ export default function VentasPage() {
           // Mostrar modal para ingresar gramos
           setSelectedWeightProduct(weightProduct);
           setIsGramosModalOpen(true);
+          setSearchCode('');
           return;
         }
 
         setError('Producto no encontrado');
+        // Mantener el foco en el campo de búsqueda para facilitar el escaneo continuo
+        searchInputRef.current?.focus();
         return;
       }
 
@@ -170,9 +211,13 @@ export default function VentasPage() {
 
       setSearchCode('');
       setError(null);
+      // Mantener el foco en el campo de búsqueda para facilitar el escaneo continuo
+      searchInputRef.current?.focus();
     } catch (err) {
       console.error('Error al buscar producto:', err);
       setError('Error al buscar el producto');
+      // Mantener el foco en el campo de búsqueda para facilitar el escaneo continuo
+      searchInputRef.current?.focus();
     }
   };
 
@@ -436,14 +481,29 @@ export default function VentasPage() {
         <div className="lg:col-span-2 bg-white rounded-lg shadow">
           <div className="p-4">
             <div className="flex gap-2 mb-4">
-              <input
-                type="text"
-                value={searchCode}
-                onChange={(e) => setSearchCode(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && searchProduct()}
-                placeholder="Ingrese código de producto"
-                className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-              />
+              <div className="relative flex-grow">
+                <input
+                  type="text"
+                  ref={searchInputRef}
+                  value={searchCode}
+                  onChange={(e) => setSearchCode(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && searchProduct()}
+                  placeholder="Escanee código de barras o ingrese código de producto"
+                  className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                />
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
+                  <button
+                    type="button"
+                    onClick={() => searchInputRef.current?.focus()}
+                    className="text-gray-400 hover:text-gray-600"
+                    title="Enfocar para usar lector de código de barras"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 00-1 1v3a1 1 0 001 1h3a1 1 0 001-1V4a1 1 0 00-1-1h-3zM12 3a1 1 0 00-1 1v3a1 1 0 001 1h3a1 1 0 001-1V4a1 1 0 00-1-1h-3zM12 9a1 1 0 00-1 1v3a1 1 0 001 1h3a1 1 0 001-1v-3a1 1 0 00-1-1h-3z" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
               <button
                 onClick={searchProduct}
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
@@ -458,7 +518,9 @@ export default function VentasPage() {
                 Productos por Peso
               </button>
             </div>
-
+            <p className="text-xs text-gray-500 mb-4">
+              Para usar el lector de código de barras USB, simplemente enfoque el lector al código mientras este campo está seleccionado.
+            </p>
             {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
 
             {isQuickSearchOpen && (

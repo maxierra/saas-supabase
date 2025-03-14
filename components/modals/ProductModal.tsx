@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
+import { Html5Qrcode } from 'html5-qrcode';
 
 interface Producto {
   id: string;
@@ -14,6 +15,8 @@ interface Producto {
   categoria: string;
   created_at: string;
   codigo_producto: string;
+  codigo_barras: string;
+  fecha_vencimiento: string;
 }
 
 interface Categoria {
@@ -46,6 +49,10 @@ const ProductModal = ({
   const [isGeneratingCode, setIsGeneratingCode] = useState(false);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [loadingCategorias, setLoadingCategorias] = useState(false);
+  const [isScanning, setIsScanning] = useState(false);
+  const scannerRef = useRef<Html5Qrcode | null>(null);
+  const scannerContainerRef = useRef<HTMLDivElement>(null);
+  const barcodeInputRef = useRef<HTMLInputElement>(null);
   
   // Estado para los campos del formulario
   const [formData, setFormData] = useState({
@@ -54,7 +61,9 @@ const ProductModal = ({
     categoria: '',
     precio_compra: '',
     precio_venta: '',
-    stock: ''
+    stock: '',
+    codigo_barras: '',
+    fecha_vencimiento: ''
   });
 
   // Errores de validación
@@ -133,7 +142,9 @@ const ProductModal = ({
           codigo_producto: product.codigo_producto || '',
           precio_compra: product.precio_compra?.toString() || '',
           precio_venta: product.precio_venta?.toString() || '',
-          stock: product.stock?.toString() || ''
+          stock: product.stock?.toString() || '',
+          codigo_barras: product.codigo_barras || '',
+          fecha_vencimiento: product.fecha_vencimiento || ''
         });
       } else {
         setFormData({
@@ -142,7 +153,9 @@ const ProductModal = ({
           codigo_producto: '',
           precio_compra: '',
           precio_venta: '',
-          stock: ''
+          stock: '',
+          codigo_barras: '',
+          fecha_vencimiento: ''
         });
         // Generar código de producto automáticamente para nuevos productos
         generateProductCode();
@@ -150,6 +163,20 @@ const ProductModal = ({
       setErrors({});
     }
   }, [isOpen, isEditing, product, generateProductCode, fetchCategorias]);
+
+  // Efecto para enfocar el campo de código de barras cuando se abre el modal
+  useEffect(() => {
+    if (isVisible && !isEditing) {
+      // Pequeño retraso para asegurar que el DOM esté listo
+      const timer = setTimeout(() => {
+        if (barcodeInputRef.current) {
+          barcodeInputRef.current.focus();
+        }
+      }, 300);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isVisible, isEditing]);
 
   // Manejar cambios en los campos del formulario
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -198,6 +225,14 @@ const ProductModal = ({
     const stock = parseInt(formData.stock);
     if (isNaN(stock) || stock < 0) {
       newErrors.stock = 'Ingrese un stock válido';
+    }
+    
+    if (!formData.codigo_barras.trim()) {
+      newErrors.codigo_barras = 'El código de barras es requerido';
+    }
+    
+    if (!formData.fecha_vencimiento.trim()) {
+      newErrors.fecha_vencimiento = 'La fecha de vencimiento es requerida';
     }
     
     setErrors(newErrors);
@@ -251,7 +286,9 @@ const ProductModal = ({
             categoria: formData.categoria || null,
             precio_compra,
             precio_venta,
-            stock
+            stock,
+            codigo_barras: formData.codigo_barras,
+            fecha_vencimiento: formData.fecha_vencimiento
           })
           .eq('id', product.id)
           .eq('uid', uid);
@@ -268,7 +305,9 @@ const ProductModal = ({
             categoria: formData.categoria || null,
             precio_compra,
             precio_venta,
-            stock
+            stock,
+            codigo_barras: formData.codigo_barras,
+            fecha_vencimiento: formData.fecha_vencimiento
           });
           
         error = insertError;
@@ -291,6 +330,71 @@ const ProductModal = ({
       setIsSubmitting(false);
     }
   };
+
+  // Función para iniciar el escáner de códigos de barras
+  const startBarcodeScanner = useCallback(() => {
+    if (!scannerContainerRef.current) return;
+    
+    setIsScanning(true);
+    
+    const html5QrCode = new Html5Qrcode("barcode-reader");
+    scannerRef.current = html5QrCode;
+    
+    html5QrCode.start(
+      { facingMode: "environment" },
+      {
+        fps: 10,
+        qrbox: { width: 250, height: 150 }
+      },
+      (decodedText: string) => {
+        // Al detectar un código de barras, lo asignamos al campo
+        setFormData(prev => ({
+          ...prev,
+          codigo_barras: decodedText
+        }));
+        // Detenemos el escáner
+        stopBarcodeScanner();
+      },
+      (errorMessage: string) => {
+        // Solo registramos errores importantes, no los de escaneo continuo
+        if (errorMessage.includes('Unable to start scanning')) {
+          console.error(errorMessage);
+        }
+      }
+    ).catch((err: Error) => {
+      console.error("Error al iniciar el escáner:", err);
+      setIsScanning(false);
+    });
+  }, []);
+  
+  // Función para detener el escáner
+  const stopBarcodeScanner = useCallback(() => {
+    if (scannerRef.current && scannerRef.current.isScanning) {
+      scannerRef.current.stop()
+        .then(() => {
+          setIsScanning(false);
+        })
+        .catch((err: Error) => {
+          console.error("Error al detener el escáner:", err);
+        });
+    } else {
+      setIsScanning(false);
+    }
+  }, []);
+
+  // Detener el escáner cuando se cierra el modal
+  useEffect(() => {
+    if (!isVisible && isScanning) {
+      stopBarcodeScanner();
+    }
+    
+    // Cleanup al desmontar el componente
+    return () => {
+      if (scannerRef.current && scannerRef.current.isScanning) {
+        scannerRef.current.stop().catch(console.error);
+      }
+    };
+  }, [isVisible, isScanning, stopBarcodeScanner]);
 
   if (!isVisible) return null;
 
@@ -448,6 +552,70 @@ const ProductModal = ({
                       placeholder="Ej: 10"
                     />
                     {errors.stock && <p className="mt-1 text-sm text-red-600">{errors.stock}</p>}
+                  </div>
+                  
+                  {/* Código de barras */}
+                  <div className="mb-4">
+                    <div className="flex justify-between items-center mb-1">
+                      <label htmlFor="codigo_barras" className="block text-sm font-medium text-gray-700">
+                        Código de barras *
+                      </label>
+                      <div className="flex space-x-2">
+                        <button
+                          type="button"
+                          onClick={() => barcodeInputRef.current?.focus()}
+                          className="text-xs text-indigo-600 hover:text-indigo-800"
+                        >
+                          Usar lector USB
+                        </button>
+                        <span className="text-xs text-gray-500">|</span>
+                        <button
+                          type="button"
+                          onClick={isScanning ? stopBarcodeScanner : startBarcodeScanner}
+                          className="text-xs text-indigo-600 hover:text-indigo-800"
+                        >
+                          {isScanning ? 'Detener cámara' : 'Usar cámara'}
+                        </button>
+                      </div>
+                    </div>
+                    <input
+                      type="text"
+                      name="codigo_barras"
+                      id="codigo_barras"
+                      ref={barcodeInputRef}
+                      value={formData.codigo_barras}
+                      onChange={handleChange}
+                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${errors.codigo_barras ? 'border-red-500' : ''}`}
+                      placeholder="Escanee el código o ingrese manualmente"
+                    />
+                    {errors.codigo_barras && <p className="mt-1 text-sm text-red-600">{errors.codigo_barras}</p>}
+                    <p className="mt-1 text-xs text-gray-500">
+                      Para usar el lector USB, simplemente enfoque el lector al código de barras mientras este campo está seleccionado.
+                    </p>
+                    
+                    {/* Contenedor para el escáner de códigos de barras */}
+                    {isScanning && (
+                      <div className="mt-2 relative">
+                        <div id="barcode-reader" ref={scannerContainerRef} className="w-full h-64 border rounded-md overflow-hidden"></div>
+                        <p className="mt-1 text-xs text-gray-500">Apunte la cámara al código de barras para escanearlo.</p>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Fecha de vencimiento */}
+                  <div className="mb-4">
+                    <label htmlFor="fecha_vencimiento" className="block text-sm font-medium text-gray-700 mb-1">
+                      Fecha de vencimiento *
+                    </label>
+                    <input
+                      type="date"
+                      name="fecha_vencimiento"
+                      id="fecha_vencimiento"
+                      value={formData.fecha_vencimiento}
+                      onChange={handleChange}
+                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${errors.fecha_vencimiento ? 'border-red-500' : ''}`}
+                    />
+                    {errors.fecha_vencimiento && <p className="mt-1 text-sm text-red-600">{errors.fecha_vencimiento}</p>}
                   </div>
                   
                   {/* Error general */}

@@ -19,6 +19,8 @@ interface Producto {
   categoria: string;
   created_at: string;
   codigo_producto: string;
+  codigo_barras: string;
+  fecha_vencimiento: string;
 }
 
 // Definimos una interfaz para el tipo de producto por peso
