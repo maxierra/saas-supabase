@@ -17,7 +17,7 @@ import {
 import { CurrencyDollarIcon, CreditCardIcon, ShoppingCartIcon, ArrowTrendingUpIcon } from '@heroicons/react/24/outline';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { supabase } from '../../../lib/supabase';
+import { supabase } from '../../lib/supabase';
 
 ChartJS.register(
   CategoryScale,
