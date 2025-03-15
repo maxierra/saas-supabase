@@ -1,5 +1,6 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../../lib/supabase';
@@ -9,7 +10,7 @@ interface ResetPasswordFormProps {
   message?: string | null;
 }
 
-const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ message: initialMessage = null }) => {
+const ResetPasswordForm = dynamic<ResetPasswordFormProps>(() => Promise.resolve(({ message: initialMessage = null }) => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -145,6 +146,6 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ message: initialM
       </form>
     </>
   );
-};
+}), { ssr: false });
 
 export default ResetPasswordForm;
