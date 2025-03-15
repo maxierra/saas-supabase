@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { supabase } from '../../lib/supabase';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 const ResetPasswordForm = () => {
   const [newPassword, setNewPassword] = useState('');
@@ -12,13 +12,18 @@ const ResetPasswordForm = () => {
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
+  
+  // Creamos el cliente de Supabase en el lado del cliente
+  const supabase = createClientComponentClient();
 
   useEffect(() => {
+    // Esta lógica solo debe ejecutarse en el cliente
+    if (typeof window === 'undefined') return;
+    
     const token = searchParams.get('token');
     const type = searchParams.get('type');
 
-    // Asegúrate de que solo se ejecute en el cliente
-    if (typeof window !== 'undefined' && token && type === 'recovery') {
+    if (token && type === 'recovery') {
       supabase.auth.setSession({
         access_token: token,
         refresh_token: token,
