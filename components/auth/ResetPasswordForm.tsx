@@ -10,19 +10,18 @@ const ResetPasswordForm = () => {
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [token, setToken] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const router = useRouter();
 
   useEffect(() => {
-    const tokenParam = searchParams.get('token');
-    const typeParam = searchParams.get('type');
+    const token = searchParams.get('token');
+    const type = searchParams.get('type');
 
-    if (tokenParam && typeParam === 'recovery') {
-      setToken(tokenParam);
+    // Asegúrate de que solo se ejecute en el cliente
+    if (typeof window !== 'undefined' && token && type === 'recovery') {
       supabase.auth.setSession({
-        access_token: tokenParam,
-        refresh_token: tokenParam,
+        access_token: token,
+        refresh_token: token,
       })
       .then(({ error }) => {
         if (error) {
