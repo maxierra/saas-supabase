@@ -1,101 +1,122 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '../../lib/supabase';
 
-const ResetPasswordForm = () => {
-  const [newPassword, setNewPassword] = useState('');
+interface ResetPasswordFormProps {
+  message?: string | null;
+}
+
+interface ResetPasswordFormProps {
+  message?: string | null;
+}
+
+const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ message: initialMessage = null }) => {
+  const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const searchParams = useSearchParams();
+  const [message, setMessage] = useState<string | null>(initialMessage);
   const router = useRouter();
-  
-  // Creamos el cliente de Supabase en el lado del cliente
-  const supabase = createClientComponentClient();
-
-  useEffect(() => {
-    // Esta lógica solo debe ejecutarse en el cliente
-    if (typeof window === 'undefined') return;
-    
-    const token = searchParams.get('token');
-    const type = searchParams.get('type');
-
-    if (token && type === 'recovery') {
-      supabase.auth.setSession({
-        access_token: token,
-        refresh_token: token,
-      })
-      .then(({ error }) => {
-        if (error) {
-          console.error('Error al restaurar sesión:', error);
-          setError('No se pudo restaurar la sesión. Intenta solicitar el cambio de contraseña nuevamente.');
-        }
-      });
-    }
-  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setLoading(true);
 
-    if (newPassword !== confirmPassword) {
+    if (password !== confirmPassword) {
       setError('Las contraseñas no coinciden');
-      setLoading(false);
       return;
     }
 
-    const { error } = await supabase.auth.updateUser({ password: newPassword });
-
-    if (error) {
-      setError(error.message);
-    } else {
-      setMessage('Contraseña actualizada exitosamente');
+    if (password.length < 6) {
+      setError('La contraseña debe tener al menos 6 caracteres');
+      return;
     }
 
-    setLoading(false);
+    setLoading(true);
+
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: password
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      setMessage('Contraseña actualizada exitosamente');
+      setTimeout(() => {
+        router.push('/login');
+      }, 2000);
+    } catch (error: unknown) {
+      setError((error as Error).message || 'Error al actualizar la contraseña');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <input
-        type="password"
-        value={newPassword}
-        onChange={(e) => setNewPassword(e.target.value)}
-        placeholder="Nueva contraseña"
-        required
-        className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
-      />
-      <input
-        type="password"
-        value={confirmPassword}
-        onChange={(e) => setConfirmPassword(e.target.value)}
-        placeholder="Confirmar nueva contraseña"
-        required
-        className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
-      />
-      <button type="submit" disabled={loading} className="w-full p-2 bg-blue-600 text-white rounded-md hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300">
-        {loading ? 'Actualizando...' : 'Actualizar Contraseña'}
-      </button>
-      {error && <div className="text-red-500">{error}</div>}
+    <>
       {message && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
-            <h2 className="text-lg font-semibold text-center">Éxito</h2>
-            <p className="text-center">{message}</p>
-            <button
-              onClick={() => router.push('/login')}
-              className="mt-4 bg-blue-600 text-white rounded-md px-4 py-2 hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 w-full"
-            >
-              Ir a Login
-            </button>
-          </div>
+        <div className="rounded-md bg-green-50 p-4 mb-6">
+          <div className="text-sm text-green-700">{message}</div>
         </div>
       )}
-    </form>
+
+      {error && (
+        <div className="rounded-md bg-red-50 p-4 mb-6">
+          <div className="text-sm text-red-700">{error}</div>
+        </div>
+      )}
+
+      <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <div className="-space-y-px rounded-md shadow-sm">
+          <div>
+            <label htmlFor="password" className="sr-only">
+              Nueva contraseña
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="new-password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="relative block w-full rounded-t-md border-0 py-1.5 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+              placeholder="Nueva contraseña"
+            />
+          </div>
+          <div>
+            <label htmlFor="confirm-password" className="sr-only">
+              Confirmar contraseña
+            </label>
+            <input
+              id="confirm-password"
+              name="confirm-password"
+              type="password"
+              autoComplete="new-password"
+              required
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="relative block w-full rounded-b-md border-0 py-1.5 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+              placeholder="Confirmar contraseña"
+            />
+          </div>
+        </div>
+
+        <div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="group relative flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:bg-blue-400"
+          >
+            {loading ? 'Actualizando...' : 'Actualizar contraseña'}
+          </button>
+        </div>
+      </form>
+    </>
   );
 };
 
