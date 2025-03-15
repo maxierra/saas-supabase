@@ -10,33 +10,28 @@ const ResetPasswordForm = () => {
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [isMounted, setIsMounted] = useState(false); // Nuevo estado
+  const [token, setToken] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const router = useRouter();
 
   useEffect(() => {
-    setIsMounted(true); // Indicar que el componente se ha montado
-  }, []);
+    const tokenParam = searchParams.get('token');
+    const typeParam = searchParams.get('type');
 
-  useEffect(() => {
-    if (isMounted) { // Solo ejecutar si el componente está montado
-      const token = searchParams.get('token');
-      const type = searchParams.get('type');
-
-      if (token && type === 'recovery') {
-        supabase.auth.setSession({
-          access_token: token,
-          refresh_token: token,
-        })
-        .then(({ error }) => {
-          if (error) {
-            console.error('Error al restaurar sesión:', error);
-            setError('No se pudo restaurar la sesión. Intenta solicitar el cambio de contraseña nuevamente.');
-          }
-        });
-      }
+    if (tokenParam && typeParam === 'recovery') {
+      setToken(tokenParam);
+      supabase.auth.setSession({
+        access_token: tokenParam,
+        refresh_token: tokenParam,
+      })
+      .then(({ error }) => {
+        if (error) {
+          console.error('Error al restaurar sesión:', error);
+          setError('No se pudo restaurar la sesión. Intenta solicitar el cambio de contraseña nuevamente.');
+        }
+      });
     }
-  }, [searchParams, isMounted]);
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
