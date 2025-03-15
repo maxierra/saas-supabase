@@ -22,9 +22,8 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ message: initialM
     const token = searchParams.get('token');
     const type = searchParams.get('type');
 
-    console.log('Token:', token);
-
-    if (token && type === 'recovery') {
+    // Asegúrate de que solo se ejecute en el cliente
+    if (typeof window !== 'undefined' && token && type === 'recovery') {
       supabase.auth.setSession({
         access_token: token,
         refresh_token: token,
@@ -77,8 +76,17 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ message: initialM
   return (
     <>
       {message && (
-        <div className="rounded-md bg-green-50 p-4 mb-6">
-          <div className="text-sm text-green-700">{message}</div>
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
+            <h2 className="text-lg font-semibold text-center">Éxito</h2>
+            <p className="text-center">{message}</p>
+            <button
+              onClick={() => router.push('/login')}
+              className="mt-4 bg-blue-600 text-white rounded-md px-4 py-2 hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 w-full"
+            >
+              Ir a Login
+            </button>
+          </div>
         </div>
       )}
 
@@ -88,7 +96,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ message: initialM
         </div>
       )}
 
-      <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="mt-8 space-y-6">
         <div className="-space-y-px rounded-md shadow-sm">
           <div>
             <label htmlFor="password" className="sr-only">
