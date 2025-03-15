@@ -10,7 +10,7 @@ interface ResetPasswordFormProps {
 }
 
 const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ message: initialMessage = null }) => {
-  const [password, setPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -19,21 +19,22 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ message: initialM
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const token = searchParams.get('token');
-    const type = searchParams.get('type');
+    if (typeof window !== 'undefined') {
+      const token = searchParams.get('token');
+      const type = searchParams.get('type');
 
-    // Asegúrate de que solo se ejecute en el cliente
-    if (typeof window !== 'undefined' && token && type === 'recovery') {
-      supabase.auth.setSession({
-        access_token: token,
-        refresh_token: token,
-      })
-      .then(({ error }) => {
-        if (error) {
-          console.error('Error al restaurar sesión:', error);
-          setError('No se pudo restaurar la sesión. Intenta solicitar el cambio de contraseña nuevamente.');
-        }
-      });
+      if (token && type === 'recovery') {
+        supabase.auth.setSession({
+          access_token: token,
+          refresh_token: token,
+        })
+        .then(({ error }) => {
+          if (error) {
+            console.error('Error al restaurar sesión:', error);
+            setError('No se pudo restaurar la sesión. Intenta solicitar el cambio de contraseña nuevamente.');
+          }
+        });
+      }
     }
   }, [searchParams]);
 
@@ -41,12 +42,12 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ message: initialM
     e.preventDefault();
     setError(null);
 
-    if (password !== confirmPassword) {
+    if (newPassword !== confirmPassword) {
       setError('Las contraseñas no coinciden');
       return;
     }
 
-    if (password.length < 6) {
+    if (newPassword.length < 6) {
       setError('La contraseña debe tener al menos 6 caracteres');
       return;
     }
@@ -55,7 +56,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ message: initialM
 
     try {
       const { error } = await supabase.auth.updateUser({
-        password: password
+        password: newPassword
       });
 
       if (error) {
@@ -99,17 +100,17 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ message: initialM
       <form onSubmit={handleSubmit} className="mt-8 space-y-6">
         <div className="-space-y-px rounded-md shadow-sm">
           <div>
-            <label htmlFor="password" className="sr-only">
+            <label htmlFor="newPassword" className="sr-only">
               Nueva contraseña
             </label>
             <input
-              id="password"
-              name="password"
+              id="newPassword"
+              name="newPassword"
               type="password"
               autoComplete="new-password"
               required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
               className="relative block w-full rounded-t-md border-0 py-1.5 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
               placeholder="Nueva contraseña"
             />
