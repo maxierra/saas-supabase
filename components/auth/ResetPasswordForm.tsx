@@ -1,32 +1,48 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { supabase } from '../../lib/supabase';
 
-interface ResetPasswordFormProps {
-  message?: string | null;
-}
-
-const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ message: initialMessage = null }) => {
+const ResetPasswordForm = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(initialMessage);
+  const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const searchParams = useSearchParams();
   const router = useRouter();
+
+  useEffect(() => {
+    const token = searchParams.get('token');
+    const type = searchParams.get('type');
+
+    if (token && type === 'recovery') {
+      supabase.auth.setSession({
+        access_token: token,
+        refresh_token: token, // A veces Supabase usa el mismo token para refresh
+      })
+      .then(({ error }) => {
+        if (error) {
+          console.error('Error al restaurar sesión:', error);
+          setError('No se pudo restaurar la sesión. Intenta solicitar el cambio de contraseña nuevamente.');
+        }
+      });
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setLoading(true);
 
-    // Validar las contraseñas
     if (newPassword !== confirmPassword) {
       setError('Las contraseñas no coinciden');
+      setLoading(false);
       return;
     }
 
-    // Actualizar la contraseña directamente
+    // Intentar actualizar la contraseña
     const { error } = await supabase.auth.updateUser({ password: newPassword });
 
     if (error) {
@@ -34,6 +50,8 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ message: initialM
     } else {
       setMessage('Contraseña actualizada exitosamente');
     }
+
+    setLoading(false);
   };
 
   return (
