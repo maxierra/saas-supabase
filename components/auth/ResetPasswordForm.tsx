@@ -10,17 +10,19 @@ const ResetPasswordForm = () => {
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const router = useRouter();
 
   useEffect(() => {
-    const token = searchParams.get('token');
-    const type = searchParams.get('type');
+    const tokenParam = searchParams.get('token');
+    const typeParam = searchParams.get('type');
 
-    if (token && type === 'recovery') {
+    if (tokenParam && typeParam === 'recovery') {
+      setToken(tokenParam);
       supabase.auth.setSession({
-        access_token: token,
-        refresh_token: token, // A veces Supabase usa el mismo token para refresh
+        access_token: tokenParam,
+        refresh_token: tokenParam,
       })
       .then(({ error }) => {
         if (error) {
