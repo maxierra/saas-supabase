@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '../../lib/supabase';
 import { User } from '@supabase/supabase-js';
+import PaymentInfoModal from './PaymentInfoModal';
 
 // Definir interfaces para los tipos
 interface SubscriptionInfo {
@@ -128,7 +129,7 @@ function SubscriptionContent() {
                       </div>
                     </div>
                     <div className="mt-4 flex items-baseline text-5xl font-extrabold">
-                      $29 <span className="ml-1 text-2xl font-medium">/mes</span>
+                      <span className="text-5xl font-extrabold">$20.000</span> <span className="ml-1 text-2xl font-medium">/mes</span>
                     </div>
                     <p className="mt-5 text-lg">Todo lo que necesitas para gestionar tu negocio de manera eficiente</p>
                   </div>
@@ -170,32 +171,12 @@ function SubscriptionContent() {
                   </div>
                 </div>
 
-                {showPaymentInfo && (
-                  <div className="mt-8 bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                    <h4 className="text-xl font-semibold text-gray-900 mb-4">Información de Pago</h4>
-                    <div className="space-y-4">
-                      <div className="bg-blue-50 p-4 rounded-lg">
-                        <p className="text-blue-700 font-medium">Realiza tu pago mediante transferencia bancaria:</p>
-                        <div className="mt-2 space-y-2 text-sm">
-                          <p><span className="font-semibold">Alias:</span> TU.ALIAS.AQUI</p>
-                          <p><span className="font-semibold">CBU:</span> XXXX XXXX XXXX XXXX XXXX</p>
-                          <p><span className="font-semibold">Titular:</span> Tu Nombre</p>
-                          <p><span className="font-semibold">Banco:</span> Nombre del Banco</p>
-                        </div>
-                      </div>
-                      <div className="bg-yellow-50 p-4 rounded-lg">
-                        <p className="text-yellow-800">Una vez realizado el pago, envíanos el comprobante a:</p>
-                        <p className="font-medium mt-1">tu@email.com</p>
-                        <p className="text-sm mt-2 text-yellow-700">Activaremos tu cuenta en menos de 24 horas hábiles.</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                <Suspense fallback={<div>Cargando...</div>}>
+                  <PaymentInfoModal isOpen={showPaymentInfo} onClose={() => setShowPaymentInfo(false)} />
+                </Suspense>
 
                 <div className="text-center">
-                  <Link href={user ? `/${user.id}/dashboard` : '/login'} className="text-sm font-medium text-blue-600 hover:text-blue-500">
-                    Volver al dashboard
-                  </Link>
+                  <Link href="/" className="text-sm font-medium text-blue-600 hover:text-blue-500">Volver a la página principal</Link>
                 </div>
               </div>
             </div>

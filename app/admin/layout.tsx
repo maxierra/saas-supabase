@@ -17,6 +17,8 @@ const menuItems = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { name: 'Suscripciones', href: '/admin/subscriptions', icon: Users },
   { name: 'Pagos', href: '/admin/payments', icon: CreditCard },
+  { name: 'Cambio de Contraseña', href: '/admin/change-password', icon: CreditCard },
+  { name: 'Comunicados Masivos', href: '/admin/bulk-communications', icon: LayoutDashboard },
 ];
 
 export default function AdminLayout({

@@ -36,37 +36,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ message }) => {
       }
 
       if (data.user) {
-        // Verificar si ya existe una suscripción
-        const { data: existingSub } = await supabase
-          .from('suscripciones')
-          .select('id')
-          .eq('uid', data.user.id)
-          .single();
-
-        // Solo crear suscripción si no existe una
-        if (!existingSub) {
-          const trialStartDate = new Date();
-          const trialEndDate = new Date();
-          trialEndDate.setDate(trialStartDate.getDate() + 30); // 30 días de prueba
-
-          const { error: subscriptionError } = await supabase
-            .from('suscripciones')
-            .insert({
-              uid: data.user.id,
-              estado: 'trial',
-              trial_start_date: trialStartDate.toISOString(),
-              trial_end_date: trialEndDate.toISOString(),
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
-            });
-
-          if (subscriptionError) {
-            console.error('Error al crear suscripción:', subscriptionError);
-            setError('Error al crear la suscripción de prueba');
-            return;
-          }
-        }
-
         setShowWelcomeModal(true);
       }
     } catch (error: unknown) {

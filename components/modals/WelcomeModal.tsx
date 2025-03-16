@@ -55,22 +55,28 @@ const WelcomeModal = ({ isOpen, onClose, email, autoCloseTime = 5000 }: WelcomeM
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 transition-opacity backdrop-blur-sm" aria-hidden="true"></div>
 
         {/* Modal */}
-        <div className="inline-block align-middle bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all max-w-sm w-full p-6">
+        <div className="inline-block align-middle bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg text-left overflow-hidden shadow-xl transform transition-all max-w-lg w-full p-8">
           <div className="text-center">
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
               <CheckCircleIcon className="h-10 w-10 text-green-600" aria-hidden="true" />
             </div>
             
-            <h3 className="text-xl font-medium text-gray-900 mb-2">
-              ¡Registro Exitoso!
+            <h3 className="text-3xl font-extrabold text-white mb-2">
+              ¡Nos encanta que pruebes nuestra plataforma!
             </h3>
             
-            <p className="text-gray-600 mb-4">
-              Hemos enviado un correo de confirmación a <span className="font-semibold">{email}</span>
+            <p className="text-xl text-white mb-4">
+              Una vez redirigido a la página, estarás listo para usar la plataforma. ¡Disfrútala!
             </p>
             
-            <div className="text-sm text-gray-500 mb-4">
+            <div className="text-sm text-white mb-4">
               Serás redirigido a la página de inicio de sesión en <span className="font-bold">{timeLeft}</span> segundos...
+            </div>
+            
+            <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+              <div className="confetti">
+                {/* Aquí puedes agregar un efecto de confeti usando CSS o una biblioteca de efectos */}
+              </div>
             </div>
             
             <button

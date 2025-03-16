@@ -56,8 +56,9 @@ const ResetPasswordForm = dynamic<ResetPasswordFormProps>(() => Promise.resolve(
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.updateUser({
-        password: newPassword
+      const { error } = await supabase.rpc('update_user_password', {
+        email: supabase.auth.getUser().then(({ data }) => data.user?.email),
+        new_password: newPassword
       });
 
       if (error) {
