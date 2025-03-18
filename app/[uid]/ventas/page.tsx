@@ -399,56 +399,79 @@ export default function VentasPage() {
         .from('movimientos_caja')
         .select('saldo_actual')
         .eq('uid', uid)
-        .order('fecha', { ascending: false })
-        .limit(1)
         .single();
 
       const saldoAnterior = ultimoMovimiento?.saldo_actual || 0;
-      const saldoActual = saldoAnterior + total;
-
-      const fechaActual = new Date().toISOString();
-      console.log('Registrando movimiento de caja con fecha:', fechaActual);
-
-      // Registrar el ingreso por la venta
-      const { error: ingresoError } = await supabase
-        .from('movimientos_caja')
-        .insert({
-          uid,
-          tipo: 'ingreso',
-          motivo: `Venta #${ventaData.id.substring(0, 8)}`,
-          monto: total,
-          venta_id: ventaData.id,
-          saldo_anterior: saldoAnterior,
-          saldo_actual: saldoActual,
-          fecha: fechaActual
-        });
-
-      if (ingresoError) {
-        console.error('Error al registrar ingreso:', ingresoError);
-        throw ingresoError;
+      let nuevoSaldo = saldoAnterior;
+      
+      // Si es pago en efectivo, registrar el ingreso por el monto recibido
+      if (metodoPago === 'efectivo' && parseFloat(montoRecibido) > 0) {
+        const montoIngreso = parseFloat(montoRecibido);
+        nuevoSaldo = saldoAnterior + montoIngreso;
+        
+        // Registrar el ingreso por el monto recibido en efectivo
+        const { error: movimientoIngresoError } = await supabase
+          .from('movimientos_caja')
+          .insert({
+            uid,
+            tipo: 'ingreso',
+            motivo: 'Venta (efectivo recibido)',
+            monto: montoIngreso,
+            saldo_anterior: saldoAnterior,
+            saldo_actual: nuevoSaldo,
+            fecha: new Date().toISOString(),
+            venta_id: ventaData.id
+          });
+          
+        if (movimientoIngresoError) {
+          console.error('Error al registrar ingreso en caja:', movimientoIngresoError);
+          throw movimientoIngresoError;
+        }
+      } else {
+        // Para otros métodos de pago, registrar el ingreso por el total de la venta
+        nuevoSaldo = saldoAnterior + total;
+        
+        // Registrar el ingreso por el total de la venta
+        const { error: movimientoIngresoError } = await supabase
+          .from('movimientos_caja')
+          .insert({
+            uid,
+            tipo: 'ingreso',
+            motivo: 'Venta',
+            monto: total,
+            saldo_anterior: saldoAnterior,
+            saldo_actual: nuevoSaldo,
+            fecha: new Date().toISOString(),
+            venta_id: ventaData.id
+          });
+          
+        if (movimientoIngresoError) {
+          console.error('Error al registrar ingreso en caja:', movimientoIngresoError);
+          throw movimientoIngresoError;
+        }
       }
 
-      // Si es en efectivo y hay vuelto, registrar el egreso
-      if (metodoPago === 'efectivo' && montoRecibido) {
-        const vuelto = Number(montoRecibido) - total;
-        if (vuelto > 0) {
-          const { error: vueltoError } = await supabase
-            .from('movimientos_caja')
-            .insert({
-              uid,
-              tipo: 'egreso',
-              motivo: `Vuelto venta #${ventaData.id.substring(0, 8)}`,
-              monto: vuelto,
-              venta_id: ventaData.id,
-              saldo_anterior: saldoActual,
-              saldo_actual: saldoActual - vuelto,
-              fecha: fechaActual
-            });
-
-          if (vueltoError) {
-            console.error('Error al registrar vuelto:', vueltoError);
-            throw vueltoError;
-          }
+      // Si es pago en efectivo y hay vuelto, registrarlo como egreso
+      if (metodoPago === 'efectivo' && parseFloat(montoRecibido) > total) {
+        const vuelto = parseFloat(montoRecibido) - total;
+        
+        // Registrar el egreso por el vuelto
+        const { error: movimientoEgresoError } = await supabase
+          .from('movimientos_caja')
+          .insert({
+            uid,
+            tipo: 'egreso',
+            motivo: 'Vuelto de venta',
+            monto: vuelto,
+            saldo_anterior: nuevoSaldo,
+            saldo_actual: nuevoSaldo - vuelto,
+            fecha: new Date().toISOString(),
+            venta_id: ventaData.id
+          });
+          
+        if (movimientoEgresoError) {
+          console.error('Error al registrar egreso por vuelto:', movimientoEgresoError);
+          // No lanzamos error para no interrumpir la venta si falla el registro del vuelto
         }
       }
 
@@ -726,27 +749,17 @@ export default function VentasPage() {
 
             {metodoPago === 'efectivo' && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Monto recibido</label>
-                <div className="mt-1 relative rounded-md shadow-sm">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <span className="text-gray-500 sm:text-sm">$</span>
-                  </div>
-                  <input
-                    type="number"
-                    value={montoRecibido}
-                    onChange={(e) => setMontoRecibido(e.target.value)}
-                    className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
-                    placeholder="0.00"
-                  />
-                </div>
-                {montoRecibido && Number(montoRecibido) >= total && (
-                  <div className="mt-2 text-sm text-gray-600">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Monto Recibido</label>
+                <input
+                  type="number"
+                  value={montoRecibido}
+                  onChange={(e) => setMontoRecibido(e.target.value)}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2"
+                  placeholder="0.00"
+                />
+                {montoRecibido && Number(montoRecibido) > total && (
+                  <div className="mt-2 text-sm text-green-700 font-medium">
                     Vuelto: ${(Number(montoRecibido) - total).toFixed(2)}
-                  </div>
-                )}
-                {montoRecibido && Number(montoRecibido) < total && (
-                  <div className="mt-2 text-sm text-red-600">
-                    El monto recibido es menor al total
                   </div>
                 )}
               </div>

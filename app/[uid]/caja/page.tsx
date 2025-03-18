@@ -37,6 +37,8 @@ export default function CajaPage() {
       setIsLoading(true);
       setError(null);
 
+      console.log('UID utilizado para cargar movimientos:', uid);
+
       // Crear fechas en UTC para la consulta
       const startDate = new Date(selectedDate);
       startDate.setUTCHours(0, 0, 0, 0);
@@ -109,13 +111,26 @@ export default function CajaPage() {
   // Calcular saldos del día
   const movimientosDelDia = movimientos || [];
   
+  // Calcular ingresos totales
   const ingresos = movimientosDelDia
     .filter(m => m.tipo === 'ingreso')
     .reduce((sum, m) => sum + m.monto, 0);
   
+  // Calcular egresos totales
   const egresos = movimientosDelDia
     .filter(m => m.tipo === 'egreso')
     .reduce((sum, m) => sum + m.monto, 0);
+    
+  // Calcular ventas reales (ingresos - vueltos)
+  const ingresosVentas = movimientosDelDia
+    .filter(m => m.tipo === 'ingreso' && m.motivo.includes('Venta'))
+    .reduce((sum, m) => sum + m.monto, 0);
+    
+  const egresosVueltos = movimientosDelDia
+    .filter(m => m.tipo === 'egreso' && m.motivo.includes('Vuelto'))
+    .reduce((sum, m) => sum + m.monto, 0);
+    
+  const ventasNetas = ingresosVentas - egresosVueltos;
 
   // Asegurarse de que el saldo actual refleje los movimientos del día
   const handleOpenMovimientoModal = (tipo: 'ingreso' | 'egreso') => {
@@ -144,7 +159,7 @@ export default function CajaPage() {
       </div>
       
       {/* Resumen de Caja */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 mb-4 sm:mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 sm:gap-6 mb-4 sm:mb-6">
         <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
           <div className="flex items-center">
             <div className="p-3 rounded-full bg-green-100">
@@ -181,6 +196,20 @@ export default function CajaPage() {
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-500">Saldo actual</p>
               <p className="text-xl font-semibold text-gray-900">${(ingresos - egresos).toFixed(2)}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
+          <div className="flex items-center">
+            <div className="p-3 rounded-full bg-yellow-100">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 8h6m-6 4h6m6-4h-6m-6 4h6" />
+              </svg>
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-500">Ventas netas</p>
+              <p className="text-xl font-semibold text-gray-900">${ventasNetas.toFixed(2)}</p>
             </div>
           </div>
         </div>
