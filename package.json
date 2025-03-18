@@ -24,6 +24,7 @@
     "react-barcode": "^1.5.3",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
+    "react-modal": "^3.16.3",
     "react-to-print": "^3.0.5",
     "recharts": "^2.15.1"
   },
@@ -33,6 +34,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/react-modal": "^3.16.3",
     "eslint": "^9",
     "eslint-config-next": "15.2.1",
     "tailwindcss": "^4",

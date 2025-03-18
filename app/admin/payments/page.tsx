@@ -81,7 +81,7 @@ export default function PaymentsPage() {
         .from('pagos')
         .insert({
           subscription_id: subscription.id,
-          amount: 10000, // Monto fijo de $10,000
+          amount: 20000, // Monto fijo de $10,000
           payment_date: currentDate.toISOString(),
           period_month: month,
           period_year: currentDate.getFullYear()
@@ -297,7 +297,7 @@ export default function PaymentsPage() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
             <div>
               <Title className="text-2xl text-blue-900">Control de Pagos Mensuales</Title>
-              <Text className="text-blue-600 font-semibold">Monto fijo: $10,000</Text>
+              <Text className="text-blue-600 font-semibold">Monto fijo: $20,000</Text>
             </div>
             <div className="w-full md:w-1/3">
               <TextInput

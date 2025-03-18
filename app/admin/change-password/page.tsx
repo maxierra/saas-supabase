@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
+import Modal from 'react-modal';
 
 // Cliente con rol de servicio para operaciones privilegiadas
 const supabaseAdmin = createClient(
@@ -14,12 +15,13 @@ export default function ChangePasswordPage() {
   const [newPassword, setNewPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setSuccess(false);
+    setModalIsOpen(false);
     setLoading(true);
 
     if (!email || !newPassword) {
@@ -54,7 +56,8 @@ export default function ChangePasswordPage() {
 
       if (updateError) throw updateError;
 
-      setSuccess(true);
+      setSuccessMessage('Contraseña actualizada con éxito.');
+      setModalIsOpen(true);
       setEmail('');
       setNewPassword('');
     } catch (error) {
@@ -68,7 +71,6 @@ export default function ChangePasswordPage() {
     <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6 mt-10">
       <h1 className="text-3xl font-bold text-center mb-4">Tienda 360</h1>
       <h1 className="text-2xl font-bold text-center mb-4">Cambio de Contraseña</h1>
-      <p className="text-center text-gray-700 mb-4">Este software está diseñado para pequeños y medianos comerciantes que buscan optimizar la gestión de su negocio. Aquí podrás mantener tu inventario organizado, analizar ventas en tiempo real, y llevar un control detallado de tu caja.</p>
       <form onSubmit={handleSubmit} className="space-y-4">
         <label className="block">
           <span className="text-gray-700">Correo electrónico:</span>
@@ -83,6 +85,12 @@ export default function ChangePasswordPage() {
         </button>
         {error && <p className="text-red-500 text-sm mt-2 text-center">{error}</p>}
       </form>
+
+      <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)}>
+        <h2 style={{ textAlign: 'center', color: 'green' }}>Éxito</h2>
+        <p style={{ textAlign: 'center', color: 'green' }}>{successMessage}</p>
+        <button onClick={() => setModalIsOpen(false)} style={{ display: 'block', margin: '0 auto' }}>Cerrar</button>
+      </Modal>
     </div>
   );
 }
