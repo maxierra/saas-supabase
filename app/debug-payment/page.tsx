@@ -9,8 +9,13 @@ export default function DebugPaymentPage() {
   const [paymentInfo, setPaymentInfo] = useState<any>(null);
   const [envInfo, setEnvInfo] = useState<any>(null);
   const [credentialsInfo, setCredentialsInfo] = useState<any>(null);
-  const searchParams = useSearchParams();
   
+  const searchParams = (
+    <Suspense fallback={<div>Cargando...</div>}>
+      {useSearchParams()}
+    </Suspense>
+  );
+
   useEffect(() => {
     // Obtener información del entorno
     fetchEnvironmentInfo();
