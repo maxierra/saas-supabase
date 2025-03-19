@@ -24,62 +24,62 @@ const supabase = createClient(supabaseUrl, supabaseKey);
  * @returns Resultado del procesamiento
  */
 export async function processPayment(payment: any) {
-  console.log('Procesando pago:', JSON.stringify(payment, null, 2));
-  
-  // Extraer información relevante del pago
-  const externalReference = payment.external_reference || '';
-  console.log('Referencia externa:', externalReference);
-  
-  // Extraer userId y subscriptionId de la referencia externa
-  let userId = null;
-  let subscriptionId = null;
-  
-  if (externalReference.includes('user_')) {
-    // Formato: user_[userId]_subscription_[subscriptionId]_[timestamp]
-    const userIdMatch = externalReference.match(/user_([^_]+)/);
-    if (userIdMatch && userIdMatch[1]) {
-      userId = userIdMatch[1];
-    }
-    
-    const subscriptionIdMatch = externalReference.match(/subscription_([^_]+)/);
-    if (subscriptionIdMatch && subscriptionIdMatch[1]) {
-      subscriptionId = subscriptionIdMatch[1];
-    }
-  } else if (externalReference.includes('subscription_')) {
-    // Formato antiguo: subscription_[subscriptionId]_[timestamp]
-    const subscriptionIdMatch = externalReference.match(/subscription_([^_]+)/);
-    if (subscriptionIdMatch && subscriptionIdMatch[1]) {
-      subscriptionId = subscriptionIdMatch[1];
-    }
-  } else {
-    // Formato de prueba o desconocido
-    subscriptionId = externalReference;
-  }
-  
-  console.log('Datos extraídos de la referencia:', { userId, subscriptionId });
-  
-  const results = {
-    userId,
-    subscriptionId,
-    updated: false,
-    payment_id: payment.id,
-    status: payment.status,
-    status_detail: payment.status_detail,
-    payment_method_id: payment.payment_method_id,
-    payment_type_id: payment.payment_type_id,
-    transaction_amount: payment.transaction_amount,
-    date_created: payment.date_created,
-    date_approved: payment.date_approved,
-    date_last_updated: payment.date_last_updated,
-  };
-  
-  // Actualizar la suscripción en la base de datos
-  if (!subscriptionId) {
-    console.error('Error: No se proporcionó subscriptionId');
-    return { ...results, error: 'No se proporcionó subscriptionId' };
-  }
-
   try {
+    console.log('Procesando pago:', JSON.stringify(payment, null, 2));
+  
+    // Extraer información relevante del pago
+    const externalReference = payment.external_reference || '';
+    console.log('Referencia externa:', externalReference);
+  
+    // Extraer userId y subscriptionId de la referencia externa
+    let userId = null;
+    let subscriptionId = null;
+  
+    if (externalReference.includes('user_')) {
+      // Formato: user_[userId]_subscription_[subscriptionId]_[timestamp]
+      const userIdMatch = externalReference.match(/user_([^_]+)/);
+      if (userIdMatch && userIdMatch[1]) {
+        userId = userIdMatch[1];
+      }
+      
+      const subscriptionIdMatch = externalReference.match(/subscription_([^_]+)/);
+      if (subscriptionIdMatch && subscriptionIdMatch[1]) {
+        subscriptionId = subscriptionIdMatch[1];
+      }
+    } else if (externalReference.includes('subscription_')) {
+      // Formato antiguo: subscription_[subscriptionId]_[timestamp]
+      const subscriptionIdMatch = externalReference.match(/subscription_([^_]+)/);
+      if (subscriptionIdMatch && subscriptionIdMatch[1]) {
+        subscriptionId = subscriptionIdMatch[1];
+      }
+    } else {
+      // Formato de prueba o desconocido
+      subscriptionId = externalReference;
+    }
+  
+    console.log('Datos extraídos de la referencia:', { userId, subscriptionId });
+  
+    const results = {
+      userId,
+      subscriptionId,
+      updated: false,
+      payment_id: payment.id,
+      status: payment.status,
+      status_detail: payment.status_detail,
+      payment_method_id: payment.payment_method_id,
+      payment_type_id: payment.payment_type_id,
+      transaction_amount: payment.transaction_amount,
+      date_created: payment.date_created,
+      date_approved: payment.date_approved,
+      date_last_updated: payment.date_last_updated,
+    };
+  
+    // Actualizar la suscripción en la base de datos
+    if (!subscriptionId) {
+      console.error('Error: No se proporcionó subscriptionId');
+      return { ...results, error: 'No se proporcionó subscriptionId' };
+    }
+
     // Verificar si la suscripción existe
     const { data: subscription, error: checkError } = await supabase
       .from('suscripciones')
@@ -136,11 +136,8 @@ export async function processPayment(payment: any) {
       }
       
       return { ...results, updated: true };
-    } catch (error: any) {
-      console.error('Error al procesar pago en la base de datos:', error);
-      return { ...results, error: error.message };
-    }
+  } catch (error: any) {
+    console.error('Error al procesar pago en la base de datos:', error);
+    return { error: error.message };
   }
-  
-  return results;
 }
