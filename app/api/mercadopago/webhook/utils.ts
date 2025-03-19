@@ -110,7 +110,7 @@ export async function processPayment(payment: any) {
       
       // Registrar el pago en la tabla pagos si existe
       try {
-        const { error: insertError } = await supabase
+        const { data, error: insertError } = await supabase
           .from('pagos')
           .insert({
             subscription_id: subscriptionId,
@@ -127,6 +127,8 @@ export async function processPayment(payment: any) {
         if (insertError) {
           console.error('Error al registrar pago:', insertError);
           // No fallamos el proceso si no se puede registrar el pago
+        } else {
+          return { ...results, updated: true, data };
         }
       } catch (insertCatchError) {
         console.error('Error al intentar registrar pago:', insertCatchError);
