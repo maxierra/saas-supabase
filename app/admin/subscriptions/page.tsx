@@ -31,15 +31,14 @@ export default function SubscriptionManager() {
     try {
       setLoading(true);
       
-      // Obtener suscripciones desde la vista
+      // Obtener suscripciones desde la función
       const { data, error } = await supabase
-        .from('subscription_details')
-        .select('*')
+        .rpc('get_subscription_details')
         .order('updated_at', { ascending: false });
 
       if (error) throw error;
 
-      // Asignar los datos directamente ya que la vista incluye toda la información
+      // Asignar los datos directamente ya que la función incluye toda la información
       setSubscriptions(data || []);
     } catch (err) {
       setError('Error al cargar suscripciones: ' + (err as Error).message);
@@ -190,7 +189,7 @@ export default function SubscriptionManager() {
                 Cancelar
               </button>
               <button
-                onClick={() => registerPayment(selectedSub.id, 100)}
+                onClick={() => registerPayment(selectedSub.id, 20000)}
                 className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
               >
                 Confirmar Pago

@@ -12,7 +12,8 @@ import {
   Cog6ToothIcon,
   ArrowLeftOnRectangleIcon,
   TruckIcon,
-  TagIcon
+  TagIcon,
+  CurrencyDollarIcon
 } from '@heroicons/react/24/outline';
 import { supabase } from '../../lib/supabase';
 
@@ -32,6 +33,7 @@ const Sidebar = ({ userUid }: SidebarProps) => {
     { name: 'Caja', href: `/${userUid}/caja`, icon: CreditCardIcon },
     { name: 'Configuraciones', href: `/${userUid}/configuraciones`, icon: Cog6ToothIcon },
     { name: 'Generación de Etiquetas', href: `/${userUid}/etiquetas`, icon: TagIcon },
+    // { name: 'Pago de Suscripción', href: `/${userUid}/pago-suscripcion`, icon: CurrencyDollarIcon },
   ];
 
   const handleSignOut = async () => {

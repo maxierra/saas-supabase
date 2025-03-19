@@ -111,7 +111,9 @@ export async function middleware(request: NextRequest) {
       // Permitir acceso a /admin/login sin verificación de sesión
       if (pathname === '/admin/login') {
         // Si ya está autenticado como admin, redirigir al panel
-        if (session?.user?.email === 'admin@admin.com') {
+        if (session?.user?.email === 'admin@admin.com' || 
+            session?.user?.email === 'maxi.erramouspe77@gmail.com' ||
+            session?.user?.user_metadata?.is_admin === 'true') {
           return NextResponse.redirect(new URL('/admin', request.url));
         }
         return response;
@@ -122,8 +124,14 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL('/admin/login', request.url));
       }
 
-      // Permitir acceso solo a admin@admin.com
-      if (session.user.email !== 'admin@admin.com') {
+      // Verificar si es administrador
+      const isAdmin = 
+        session.user.email === 'admin@admin.com' || 
+        session.user.email === 'maxi.erramouspe77@gmail.com' || 
+        session.user.user_metadata?.is_admin === 'true';
+      
+      // Permitir acceso solo a administradores
+      if (!isAdmin) {
         console.log('Middleware - Usuario no es administrador');
         return NextResponse.redirect(new URL('/admin/login', request.url));
       }

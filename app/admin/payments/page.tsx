@@ -61,9 +61,8 @@ export default function PaymentsPage() {
   const loadSubscriptions = async () => {
     try {
       const { data, error } = await supabase
-        .from('suscripciones_con_usuarios')
-        .select('id, uid, user_email, estado')
-        .order('user_email');
+        .rpc('get_suscripciones_con_usuarios')
+        .order('email');
 
       if (error) throw error;
       setSubscriptions(data || []);
@@ -151,18 +150,17 @@ export default function PaymentsPage() {
       // Obtener emails de usuarios
       const userIds = paymentsData?.map(payment => payment.suscripciones?.uid).filter(Boolean) || [];
       const { data: usersData, error: usersError } = await supabase
-        .from('suscripciones_con_usuarios')
-        .select('uid, user_email')
+        .rpc('get_suscripciones_con_usuarios')
         .in('uid', userIds);
 
       if (usersError) throw usersError;
 
       // Mapear emails a pagos
       const paymentsWithEmails = paymentsData?.map(payment => {
-        const user = usersData?.find(u => u.uid === payment.suscripciones?.uid);
+        const user = usersData?.find((u: { uid: string; email: string }) => u.uid === payment.suscripciones?.uid);
         return {
           ...payment,
-          user_email: user?.user_email
+          user_email: user?.email
         };
       });
 

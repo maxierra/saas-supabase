@@ -19,6 +19,7 @@
     "date-fns": "^4.1.0",
     "html5-qrcode": "^2.3.8",
     "lucide-react": "^0.479.0",
+    "mercadopago": "^2.3.0",
     "next": "15.2.1",
     "react": "^18.2.0",
     "react-barcode": "^1.5.3",

@@ -26,8 +26,20 @@ export default function AdminLoginPage() {
       if (error) throw error;
 
       if (data.user) {
-        // Verificar si es admin@admin.com
-        if (data.user.email === 'admin@admin.com') {
+        // Mostrar información para depuración
+        console.log('Usuario autenticado:', data.user);
+        console.log('Email:', data.user.email);
+        console.log('Metadatos:', data.user.user_metadata);
+        
+        // Verificar si es administrador (usando metadatos o email específico)
+        const isAdmin = 
+          data.user.email === 'admin@admin.com' || 
+          data.user.email === 'maxi.erramouspe77@gmail.com' ||
+          data.user.user_metadata?.is_admin === 'true';
+        
+        console.log('¿Es admin?', isAdmin);
+        
+        if (isAdmin) {
           router.push('/admin');
         } else {
           setError('No tienes permisos de administrador');
