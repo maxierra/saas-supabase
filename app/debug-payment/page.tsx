@@ -10,11 +10,7 @@ export default function DebugPaymentPage() {
   const [envInfo, setEnvInfo] = useState<any>(null);
   const [credentialsInfo, setCredentialsInfo] = useState<any>(null);
   
-  const searchParams = (
-    <Suspense fallback={<div>Cargando...</div>}>
-      {useSearchParams()}
-    </Suspense>
-  );
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     // Obtener información del entorno
@@ -163,20 +159,6 @@ export default function DebugPaymentPage() {
                   <pre className="bg-gray-100 p-3 rounded text-sm overflow-x-auto">
                     {JSON.stringify(paymentInfo, null, 2)}
                   </pre>
-                  
-                  {paymentInfo.init_point && (
-                    <div className="mt-4">
-                      <p className="mb-2">Puedes probar el pago usando este enlace:</p>
-                      <a 
-                        href={paymentInfo.init_point} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="inline-block py-2 px-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-md"
-                      >
-                        Ir a la página de pago
-                      </a>
-                    </div>
-                  )}
                 </div>
               )}
             </div>
@@ -191,18 +173,6 @@ export default function DebugPaymentPage() {
                 <li>Si el pago se crea correctamente pero falla al procesarse, revisa los datos del comprador y la tarjeta.</li>
                 <li>Verifica que la moneda y el país configurados sean correctos.</li>
                 <li>Asegúrate de que el webhook esté correctamente configurado para recibir notificaciones.</li>
-              </ol>
-            </div>
-            
-            <div className="mt-8 p-4 bg-red-50 border border-red-200 rounded">
-              <h3 className="font-medium text-red-800 mb-2">Error detectado: Token de acceso inválido</h3>
-              <p className="text-sm text-red-700 mb-4">
-                Se ha detectado que el token de acceso no es válido o ha expirado. Para solucionar este problema:
-              </p>
-              <ol className="list-decimal pl-5 text-sm text-red-700 space-y-2">
-                <li><strong>Verifica tus credenciales:</strong> Accede a tu cuenta y asegúrate de tener las credenciales correctas.</li>
-                <li><strong>Actualiza el archivo .env.local:</strong> Asegúrate de que las variables estén correctamente configuradas.</li>
-                <li><strong>Reinicia el servidor:</strong> Después de actualizar las variables de entorno, reinicia el servidor para que los cambios surtan efecto.</li>
               </ol>
             </div>
           </div>
