@@ -27,17 +27,25 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, showNav = true, showH
             </Link>
           </div>
           <nav className="hidden gap-6 md:flex">
-            <Link href="#sobre-nosotros" className="text-sm font-medium transition-colors hover:text-primary">
-              Sobre Nosotros
+            <Link href="#sobre-nosotros" className="text-sm font-medium relative px-3 py-2 rounded-lg transition-all duration-300 hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white group">
+              <span className="relative z-10">Sobre Nosotros</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-100 to-blue-200 opacity-0 rounded-lg transition-opacity group-hover:opacity-20"></div>
             </Link>
-            <Link href="#preguntas-frecuentes" className="text-sm font-medium transition-colors hover:text-primary">
-              Preguntas Frecuentes
+            <Link href="#sobre-software" className="text-sm font-medium relative px-3 py-2 rounded-lg transition-all duration-300 hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white group">
+              <span className="relative z-10">Sobre Nuestro Software</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-100 to-blue-200 opacity-0 rounded-lg transition-opacity group-hover:opacity-20"></div>
             </Link>
-            <Link href="#videotutoriales" className="text-sm font-medium transition-colors hover:text-primary">
-              Videotutoriales
+            <Link href="#preguntas-frecuentes" className="text-sm font-medium relative px-3 py-2 rounded-lg transition-all duration-300 hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white group">
+              <span className="relative z-10">Preguntas Frecuentes</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-100 to-blue-200 opacity-0 rounded-lg transition-opacity group-hover:opacity-20"></div>
             </Link>
-            <Link href="#precios" className="text-sm font-medium transition-colors hover:text-primary">
-              Precios
+            <Link href="#videotutoriales" className="text-sm font-medium relative px-3 py-2 rounded-lg transition-all duration-300 hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white group">
+              <span className="relative z-10">Videotutoriales</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-100 to-blue-200 opacity-0 rounded-lg transition-opacity group-hover:opacity-20"></div>
+            </Link>
+            <Link href="#precios" className="text-sm font-medium relative px-3 py-2 rounded-lg transition-all duration-300 hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white group">
+              <span className="relative z-10">Precios</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-100 to-blue-200 opacity-0 rounded-lg transition-opacity group-hover:opacity-20"></div>
             </Link>
           </nav>
           <div className="flex items-center gap-4">
@@ -55,7 +63,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, showNav = true, showH
                 alt="Logo"
                 fill
                 style={{ objectFit: 'contain' }}
-                className="rounded-lg shadow-lg"
+                className="rounded-lg shadow-lg transition-all duration-500 hover:scale-105 hover:shadow-2xl animate-fade-in filter hover:brightness-110 hover:contrast-110"
               />
             </div>
             <div className="w-[450px] bg-white rounded-lg shadow-xl p-8">
@@ -82,6 +90,82 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, showNav = true, showH
               {children}
             </div>
           </div>
+
+          <section id="sobre-software" className="py-16 bg-white rounded-lg shadow-xl mt-16 p-8">
+            <h2 className="text-3xl font-bold text-center mb-8">Tienda 360 - La solución integral para la gestión de tu negocio</h2>
+            <p className="text-lg text-gray-600 text-center mb-12">
+              Tienda 360 es un software diseñado para optimizar la administración de cualquier tipo de negocio mediante un sistema POS (Punto de Venta) eficiente y herramientas avanzadas de control de inventario, reportes y estadísticas en tiempo real.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+              <div className="p-6 bg-blue-50 rounded-lg">
+                <h3 className="text-xl font-semibold mb-4">🔹 Sistema POS</h3>
+                <ul className="space-y-2 text-gray-600">
+                  <li>• Interfaz intuitiva y fácil de usar</li>
+                  <li>• Registro de ventas en tiempo real</li>
+                  <li>• Múltiples opciones de pago</li>
+                  <li>• Generación automática de facturas</li>
+                  <li>• Gestión de clientes</li>
+                </ul>
+              </div>
+
+              <div className="p-6 bg-blue-50 rounded-lg">
+                <h3 className="text-xl font-semibold mb-4">📦 Control de Inventario</h3>
+                <ul className="space-y-2 text-gray-600">
+                  <li>• Registro con código de barras</li>
+                  <li>• Alertas de stock bajo</li>
+                  <li>• Control de movimientos</li>
+                  <li>• Reportes detallados</li>
+                  <li>• Gestión de categorías</li>
+                </ul>
+              </div>
+
+              <div className="p-6 bg-blue-50 rounded-lg">
+                <h3 className="text-xl font-semibold mb-4">📊 Reportes en Tiempo Real</h3>
+                <ul className="space-y-2 text-gray-600">
+                  <li>• Análisis de ventas</li>
+                  <li>• Comparación de períodos</li>
+                  <li>• Tendencias de compra</li>
+                  <li>• Exportación de reportes</li>
+                  <li>• Estadísticas detalladas</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-r from-blue-100 to-blue-50 p-8 rounded-lg mb-12">
+              <h3 className="text-2xl font-bold text-center mb-6">Beneficios de Tienda 360</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="flex items-start space-x-3">
+                  <span className="text-green-500 text-xl">✅</span>
+                  <div>
+                    <h4 className="font-semibold">Mayor eficiencia</h4>
+                    <p className="text-gray-600">Automatiza tareas repetitivas y optimiza el tiempo de trabajo</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <span className="text-green-500 text-xl">✅</span>
+                  <div>
+                    <h4 className="font-semibold">Reducción de pérdidas</h4>
+                    <p className="text-gray-600">Controla tu inventario y evita desabastecimientos</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <span className="text-green-500 text-xl">✅</span>
+                  <div>
+                    <h4 className="font-semibold">Decisiones inteligentes</h4>
+                    <p className="text-gray-600">Accede a reportes detallados y estadísticas clave</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <span className="text-green-500 text-xl">✅</span>
+                  <div>
+                    <h4 className="font-semibold">Seguridad y control</h4>
+                    <p className="text-gray-600">Define permisos y protege la información</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
 
           <section id="sobre-nosotros" className="py-16 bg-white rounded-lg shadow-xl mt-16 p-8">
             <h2 className="text-3xl font-bold text-center mb-8">Sobre Nosotros</h2>
