@@ -1,31 +1,29 @@
-import React, { useState } from 'react';
-import Modal from 'react-modal';
+import React from 'react';
 
-const VideoModal = ({ isOpen, closeModal }: { isOpen: boolean; closeModal: () => void; }) => {
+const VideoModal = ({ isOpen, closeModal }: { isOpen: boolean; closeModal: () => void }) => {
+  if (!isOpen) return null;
+
   return (
-    <Modal isOpen={isOpen} onRequestClose={closeModal} contentLabel="Videos de Ayuda">
-      <button onClick={closeModal} style={{ position: 'absolute', top: '10px', right: '10px', background: 'none', border: 'none', fontSize: '16px', cursor: 'pointer' }}>X</button>
-      <h2>Aprendiendo a usar el sistema</h2>
-      <div>
-        <h3>Registro y Login</h3>
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/TzBls9UBwgY" frameBorder="0" allowFullScreen></iframe>
-        <h3>Configuraciones Principales</h3>
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/fKK62jAPARg" frameBorder="0" allowFullScreen></iframe>
-        <h3>Carga de Productos</h3>
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/ZSxP-OwR2LQ" frameBorder="0" allowFullScreen></iframe>
-        <h3>Realizando Nuestra Primera Venta</h3>
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/Uv9GtrG9WxU" frameBorder="0" allowFullScreen></iframe>
-        <h3>Gestión de Caja Diaria</h3>
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/SpMKGPPb7QY" frameBorder="0" allowFullScreen></iframe>
-        <h3>Proveedores</h3>
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/trV_96OpTsY" frameBorder="0" allowFullScreen></iframe>
-        <h3>Generar Etiquetas</h3>
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/jIqfFsukDx4" frameBorder="0" allowFullScreen></iframe>
-        <h3>Dashboard</h3>
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/qH84WY-vPlM" frameBorder="0" allowFullScreen></iframe>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="relative w-full max-w-4xl p-4">
+        <button
+          onClick={closeModal}
+          className="absolute top-2 right-2 z-10 p-2 text-white bg-black bg-opacity-50 rounded-full hover:bg-opacity-75"
+        >
+          ×
+        </button>
+        <div className="w-full aspect-video relative rounded-lg overflow-hidden shadow-lg bg-white">
+          <iframe 
+            className="absolute top-0 left-0 w-full h-full"
+            src="https://www.youtube.com/embed/your-video-id?rel=0&showinfo=1&controls=1"
+            title="Video Tutorial"
+            frameBorder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" 
+            allowFullScreen
+          ></iframe>
+        </div>
       </div>
-      <button onClick={closeModal}>Cerrar</button>
-    </Modal>
+    </div>
   );
 };
 

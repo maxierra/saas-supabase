@@ -47,7 +47,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ message }) => {
 
   const handleCloseModal = () => {
     setShowWelcomeModal(false);
-    // Redirigir a la página de login con un parámetro que indique registro exitoso
     router.push('/login?registered=true');
   };
 
@@ -124,7 +123,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ message }) => {
           </div>
         </div>
         
-        {/* Indicador de fortaleza de contraseña */}
         <PasswordStrengthIndicator password={password} />
 
         <div>
@@ -185,13 +183,12 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ message }) => {
         </p>
       </div>
 
-      {/* Modal de bienvenida con cierre automático */}
       {showWelcomeModal && (
         <WelcomeModal
           isOpen={showWelcomeModal}
           onClose={handleCloseModal}
           email={email}
-          autoCloseTime={6000} // 6 segundos para el cierre automático
+          autoCloseTime={6000}
         />
       )}
     </>
