@@ -27,6 +27,10 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, showNav = true, showH
             </Link>
           </div>
           <nav className="hidden gap-6 md:flex">
+            <Link href="/login" className="text-sm font-medium relative px-3 py-2 rounded-lg transition-all duration-300 hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white group">
+              <span className="relative z-10">Inicio</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-100 to-blue-200 opacity-0 rounded-lg transition-opacity group-hover:opacity-20"></div>
+            </Link>
             <Link href="#sobre-nosotros" className="text-sm font-medium relative px-3 py-2 rounded-lg transition-all duration-300 hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white group">
               <span className="relative z-10">Sobre Nosotros</span>
               <div className="absolute inset-0 bg-gradient-to-r from-blue-100 to-blue-200 opacity-0 rounded-lg transition-opacity group-hover:opacity-20"></div>
@@ -45,6 +49,10 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, showNav = true, showH
             </Link>
             <Link href="#precios" className="text-sm font-medium relative px-3 py-2 rounded-lg transition-all duration-300 hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white group">
               <span className="relative z-10">Precios</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-100 to-blue-200 opacity-0 rounded-lg transition-opacity group-hover:opacity-20"></div>
+            </Link>
+            <Link href="#terminos-condiciones" className="text-sm font-medium relative px-3 py-2 rounded-lg transition-all duration-300 hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white group">
+              <span className="relative z-10">Términos y Condiciones</span>
               <div className="absolute inset-0 bg-gradient-to-r from-blue-100 to-blue-200 opacity-0 rounded-lg transition-opacity group-hover:opacity-20"></div>
             </Link>
           </nav>
@@ -201,6 +209,68 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, showNav = true, showH
                   <li>Compromiso con la calidad</li>
                   <li>Responsabilidad social</li>
                 </ul>
+              </div>
+            </div>
+          </section>
+
+          <section id="terminos-condiciones" className="py-16 bg-white rounded-lg shadow-xl mt-16 p-8">
+            <h2 className="text-3xl font-bold text-center mb-8">Términos y Condiciones de Tienda360</h2>
+            <div className="max-w-4xl mx-auto space-y-8">
+              <p className="text-center text-gray-600">Válido para la República Argentina<br/>Última actualización: Marzo 2024</p>
+              
+              <div className="space-y-6">
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <h3 className="font-semibold text-xl mb-3">1. Aceptación de los Términos</h3>
+                  <p className="text-gray-600">Al utilizar la plataforma Tienda360 (en adelante, "el Servicio"), propiedad de Tienda360, usted acepta cumplir con estos Términos y Condiciones bajo las leyes de la República Argentina. Si no está de acuerdo, absténgase de usar el Servicio.</p>
+                </div>
+
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <h3 className="font-semibold text-xl mb-3">2. Descripción del Servicio</h3>
+                  <p className="text-gray-600">Tienda360 es un software de punto de venta (SaaS) diseñado para comercios, que ofrece funciones de gestión de inventario, ventas, reportes y otras herramientas comerciales, cumpliendo con las normativas vigentes en Argentina.</p>
+                </div>
+
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <h3 className="font-semibold text-xl mb-3">3. Uso Responsable</h3>
+                  <h4 className="font-semibold text-lg mb-2">3.1 Prohibiciones</h4>
+                  <p className="text-gray-600 mb-4">Queda estrictamente prohibido:</p>
+                  <ul className="list-disc pl-6 space-y-2 text-gray-600">
+                    <li>Utilizar la plataforma para actividades ilegales según las leyes argentinas.</li>
+                    <li>Realizar acciones que vulneren derechos de terceros.</li>
+                    <li>Distribuir malware, acceder no autorizadamente al sistema o realizar ingeniería inversa.</li>
+                  </ul>
+                </div>
+
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <h3 className="font-semibold text-xl mb-3">4. Protección de Datos Personales</h3>
+                  <h4 className="font-semibold text-lg mb-2">4.1 Medidas de Seguridad</h4>
+                  <p className="text-gray-600 mb-4">Implementamos protocolos de encriptación y alojamos datos en servicios certificados.</p>
+                  <h4 className="font-semibold text-lg mb-2">4.2 Derechos del Usuario</h4>
+                  <p className="text-gray-600">Puede solicitar la modificación o eliminación de sus datos personales enviando un correo a soporte@tienda360.com.</p>
+                </div>
+
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <h3 className="font-semibold text-xl mb-3">5. Limitación de Responsabilidad</h3>
+                  <p className="text-gray-600">No nos hacemos responsables de:</p>
+                  <ul className="list-disc pl-6 space-y-2 text-gray-600">
+                    <li>Del uso ilegal o fraudulento que los usuarios hagan de la plataforma.</li>
+                    <li>De daños indirectos según el Art. 1730 del Código Civil y Comercial.</li>
+                    <li>De interrupciones del servicio por causas ajenas a nuestro control.</li>
+                  </ul>
+                </div>
+
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <h3 className="font-semibold text-xl mb-3">6. Derechos del Consumidor</h3>
+                  <ul className="list-disc pl-6 space-y-2 text-gray-600">
+                    <li>Información clara sobre funciones, precios y limitaciones del Servicio.</li>
+                    <li>Derecho de arrepentimiento dentro de los 10 días corridos.</li>
+                    <li>Presentación de reclamos ante la Dirección Nacional de Defensa del Consumidor.</li>
+                  </ul>
+                </div>
+
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <h3 className="font-semibold text-xl mb-3">7. Contacto y Notificaciones</h3>
+                  <p className="text-gray-600">Email: soporte@tienda360.com<br/>Las notificaciones serán válidas cuando se envíen al correo electrónico registrado por el usuario.</p>
+                </div>
               </div>
             </div>
           </section>

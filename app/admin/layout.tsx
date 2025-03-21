@@ -10,7 +10,8 @@ import {
   CreditCard,
   LogOut,
   ChevronLeft,
-  Menu
+  Menu,
+  Megaphone
 } from 'lucide-react';
 
 const menuItems = [
@@ -19,6 +20,7 @@ const menuItems = [
   { name: 'Pagos', href: '/admin/payments', icon: CreditCard },
   { name: 'Cambio de Contraseña', href: '/admin/change-password', icon: CreditCard },
   { name: 'Comunicados Masivos', href: '/admin/bulk-communications', icon: LayoutDashboard },
+  { name: 'Marketing', href: '/admin/marketing', icon: Megaphone },
 ];
 
 export default function AdminLayout({

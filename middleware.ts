@@ -87,14 +87,26 @@ export async function middleware(request: NextRequest) {
             return request.cookies.get(name)?.value;
           },
           set(name: string, value: string, options: any) {
-            response.cookies.set(name, value, {
-              ...options,
-              httpOnly: true,
-              secure: process.env.NODE_ENV === 'production',
-              sameSite: 'lax',
-              path: '/',
-              maxAge: 7 * 24 * 60 * 60 // 7 días
-            });
+            // No intentar parsear el valor como JSON si es base64
+            if (name.includes('sb-') && value.startsWith('base64-')) {
+              response.cookies.set(name, value, {
+                ...options,
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                path: '/',
+                maxAge: 7 * 24 * 60 * 60 // 7 días
+              });
+            } else {
+              response.cookies.set(name, value, {
+                ...options,
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                path: '/',
+                maxAge: 7 * 24 * 60 * 60 // 7 días
+              });
+            }
           },
           remove(name: string, options: any) {
             response.cookies.set(name, '', { ...options, maxAge: 0, path: '/' });
